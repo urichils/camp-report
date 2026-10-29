@@ -5,6 +5,23 @@
   font-style: normal;
 }
 
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    filter: blur(12px); /* Add this line */
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px); /* Unblurs as it finishes */
+    transform: translateY(0);
+  }
+}
+
+.anim-fade-in-up {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;
