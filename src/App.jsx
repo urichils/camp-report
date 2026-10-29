@@ -1,39 +1,22 @@
+import photoManifest from './photoManifest.json';
 import { useState, useRef, useEffect } from 'react';
+import './App.css';
+import sahayatraLogo from './assets/sahayatra-logo.png';
+import bestCamper from './assets/Best_camper.jpg';
+import bestCampgirl from './assets/Best_campgirl.jpg';
+import kannanChettan from './assets/Kannan_chettan.JPG';
+import abhijithChettan from './assets/Abhijith_chettan.jpg';
+import benjamin from './assets/Benjamin.JPG';
+import bestGroup from './assets/Best_group.JPG';
+import { Bus, Utensils } from 'lucide-react';
+import endImg from './assets/end.png';
 
 // All public photos for the global filmstrip
-const ALL_PHOTOS = [
-  { url: '/bg.JPG', caption: 'Camp at Wayanad' },
-  { url: '/d1.1.JPG', caption: 'Anchoring' },
-  { url: '/d1.2.JPG', caption: 'An unexpected pair of guests' },
-  { url: '/d1.3.JPG', caption: 'Group dance' },
-  { url: '/d1.4.JPG', caption: 'Guitar performance' },
-  { url: '/d1.5.JPG', caption: 'Another group dance' },
-  { url: '/d2.1.JPG', caption: 'Camp arrival' },
-  { url: '/d2.2.JPG', caption: 'Campsite setup' },
-  { url: '/DSC00333.JPG', caption: '' },
-  { url: '/DSC00334.JPG', caption: '' },
-  { url: '/DSC00335.JPG', caption: '' },
-  { url: '/DSC00337.JPG', caption: '' },
-  { url: '/DSC00967 (2).JPG', caption: '' },
-  { url: '/DSC00967 (3).JPG', caption: '' },
-  { url: '/DSC00967.JPG', caption: '' },
-  { url: '/DSC00975 (2).JPG', caption: '' },
-  { url: '/DSC00975 (3).JPG', caption: '' },
-  { url: '/DSC00975.JPG', caption: '' },
-  { url: '/DSC00977 (2).JPG', caption: '' },
-  { url: '/DSC00977 (3).JPG', caption: '' },
-  { url: '/DSC00977.JPG', caption: '' },
-  { url: '/DSC01046.JPG', caption: '' },
-  { url: '/DSC01047.JPG', caption: '' },
-  { url: '/DSC01048.JPG', caption: '' },
-  { url: '/DSC09601.JPG', caption: '' },
-  { url: '/DSC09602.JPG', caption: '' },
-  { url: '/DSC09603.JPG', caption: '' },
-  { url: '/DSC09604.JPG', caption: '' },
-  { url: '/DSC09874.JPG', caption: '' },
-  { url: '/DSC09875.JPG', caption: '' },
-  { url: '/DSC09876.JPG', caption: '' },
-];
+// ALL_PHOTOS dynamically loaded from public/photos via photoManifest
+const ALL_PHOTOS = photoManifest.map((item) => ({
+  url: item.url,
+  caption: item.caption || item.filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ')
+}));
 
 // FACULTY & ADVISORY DATA STRUCTURES
 const CAMP_DIRECTORS = [
@@ -73,10 +56,10 @@ const STUDENT_OFFICE_BEARERS = [
 const GROUP_LEADERS = [
   { group: 'Group 1', leader: 'Abhishek Vincent', deputy: 'Annamol Joseph' },
   { group: 'Group 2', leader: 'Anna Maria Varghese', deputy: 'Christine Binu' },
-  { group: 'Group 3', leader: 'Ashwin P.', deputy: 'Ananya' },
+  { group: 'Group 3', leader: 'Ashwin P.', deputy: 'Anannya Raghunath K.' },
   { group: 'Group 4', leader: 'Sayana Das', deputy: 'Ajo K. Biju' },
-  { group: 'Group 5', leader: 'Maria Biju', deputy: 'James' },
-  { group: 'Group 6', leader: 'Athulya Madhav', deputy: 'Annsteve' }
+  { group: 'Group 5', leader: 'Maria Biju', deputy: 'James Manuel' },
+  { group: 'Group 6', leader: 'Athulya Madhav', deputy: 'Annsteve Jaison' }
 ];
 
 // COMMITTEE CONVENERS DATA
@@ -85,8 +68,8 @@ const COMMITTEE_CONVENERS = [
   { code: 'COM 02', committee: 'Food and Waste Management', convener: 'Nidhi Grace', coConvener: 'Jiss Abraham' },
   { code: 'COM 03', committee: 'Programme and Cultural', convener: 'Ahmed Shameer', coConvener: 'Aysha Sana V.' },
   { code: 'COM 04', committee: 'Discipline', convener: 'Abhijith Biju', coConvener: 'Devsaro' },
-  { code: 'COM 05', committee: 'Travel and Accommodation', convener: 'Pragathi Raj', coConvener: '' },
-  { code: 'COM 06', committee: 'Tools and Work', convener: 'Teshaswini Nair', coConvener: 'Abhinav B. T.' },
+  { code: 'COM 05', committee: 'Travel and Accommodation', convener: 'Pragathi Raj', coConvener: 'Akhil' },
+  { code: 'COM 06', committee: 'Tools and Work', convener: 'Thejaswini Nair', coConvener: 'Abhinav B. T.' },
   { code: 'COM 07', committee: 'Finance, First Aid and Medical', convener: 'Aleena K. Ani', coConvener: 'Nikhil Paul' }
 ];
 
@@ -95,557 +78,671 @@ const GROUP_DATA = [
     id: 'group-1',
     name: 'Group 01',
     days: [
-      { 
-        day: 1, 
-        title: 'Cultural Programmes', 
-        note: 'Successfully rehearsed and performed on the stage as part of the Cultural Day. The group captivated the audience with coordinated dance numbers, live guitar, and energetic anchoring.', 
+      {
+        day: 1,
+        title: 'Cultural Programmes & Duty Planning',
+        points: [
+          'Rehearsed and performed culturals',
+          "Discussed tomorrow's cleaning duty"
+        ],
+        note: "Rehearsed and performed culturals. Discussed tomorrow's cleaning duty."
       },
       {
         day: 2,
-        title: 'Morning Exercises & Camp Orientation',
-        note: 'Participated in early morning physical conditioning followed by a full campus orientation walk. Group members helped map the boundary perimeters and settle into the routine of camp life.',
+        title: 'Camp Premises Cleaning & Township Visit',
+        points: [
+          'Cleaned the inner and outer camp premises',
+          'Visited Township — visited 53 houses and planted 275 saplings',
+          'Interacted with the local community'
+        ],
+        note: 'Cleaned the inner and outer camp premises. Visited Township — visited 53 houses and planted 275 saplings. Interacted with the local community.'
       },
       {
         day: 3,
-        title: 'Community Work & Field Activities',
-        note: 'Joined community outreach activities in the Meppadi area. Assisted in classroom restoration and campus beautification alongside local volunteers.',
+        title: 'Arunamala Material Transportation',
+        points: [
+          'Reached Arunamala early in the morning and engaged in material transportation.',
+          'Transported over 75 bricks'
+        ],
+        note: 'Reached Arunamala early in the morning and engaged in material transportation. Transported over 75 bricks.'
       },
       {
         day: 4,
-        title: 'Campfire Night & Storytelling',
-        note: 'Gathered around the stone fire circle for an evening of acoustic music, folk songs, and campfire stories. Shared reflections from the week with coordinators and faculty.',
+        title: 'Full Camp Meal Preparation & Waste Management',
+        points: [
+          'Prepared meals for the whole camp and managed waste disposals for the day.',
+          'Breakfast — idly, sambar, boiled egg',
+          'Lunch — fried rice, chilli chicken, gobi manchurian',
+          'Dinner — tomato rice, soya curry'
+        ],
+        note: 'Prepared meals for the whole camp and managed waste disposals for the day. Breakfast — idly, sambar, boiled egg. Lunch — fried rice, chilli chicken, gobi manchurian. Dinner — tomato rice, soya curry.'
       },
       {
         day: 5,
-        title: 'Departure & Final Review',
-        note: 'Completed the leave-no-trace site sweep and packed all equipment. Attended the closing ceremony and submitted the group evaluation journal before boarding the return convoy.',
-      },
+        title: 'Meppadi Town Public Cleaning & Township Culturals',
+        points: [
+          'Collected tools and travelled to Meppadi Town for cleaning of the public premises allocated by the Town Panchayat',
+          'Cleaned the wall and school premises of Meppadi L.P. School',
+          'Performed cultural programmes at Township'
+        ],
+        note: 'Collected tools and travelled to Meppadi Town for cleaning of the public premises allocated by the Town Panchayat. Cleaned the wall and school premises of Meppadi L.P. School. Performed cultural programmes at Township.'
+      }
     ]
   },
   {
     id: 'group-2',
     name: 'Group 02',
     days: [
-      { 
-        day: 1, 
-        title: 'Reaching the Camp Site', 
-        note: 'No duties were assigned for the day, so group members gathered for the cultural camp inauguration in the evening. After dinner, participated in day evaluation at camp and briefing regarding next day\'s duties. Group was dismissed after faculty orientation.',
+      {
+        day: 1,
+        title: 'Campsite Settlement, Inauguration & Briefing',
+        points: [
+          'Settled into campsite',
+          'Gathered for camp inauguration and cultural programmes',
+          'Participated in camp evaluation and briefing'
+        ],
+        note: 'Settled into campsite. Gathered for camp inauguration and cultural programmes. Participated in camp evaluation and briefing.'
       },
       {
         day: 2,
-        title: 'Morning Assembly & First Duties',
-        note: 'Attended the morning roll call and took part in campus upkeep duties. Group members assisted with flagging boundary areas and arranging dormitory furniture.',
+        title: 'Poolakkunnu Material Transport & Camp Paper',
+        points: [
+          'Visited Poolakkunnu for material transportation — moved M-sand and mud bricks to construction site',
+          'Presented camp paper during camp evaluation',
+          'Washed and prepared items for next day’s food preparation'
+        ],
+        note: 'Visited Poolakkunnu for material transportation — moved M-sand and mud bricks to construction site. Presented camp paper during camp evaluation. Washed and prepared items for next day’s food preparation.'
       },
       {
         day: 3,
-        title: 'Field Work Rotation',
-        note: 'Rotated into outdoor field activities at the valley work area. Helped transport construction materials and maintained site safety standards throughout the day.',
+        title: 'Camp Food Preparation & Principal Welcome Dinner',
+        points: [
+          'Food preparation for the whole camp and overall waste disposal for the day.',
+          'Dinner was specially prepared to warmly welcome our principal to the campsite'
+        ],
+        note: 'Food preparation for the whole camp and overall waste disposal for the day. Dinner was specially prepared to warmly welcome our principal to the campsite.'
       },
       {
         day: 4,
-        title: 'Cultural Night Support',
-        note: 'Assisted with stage setup, managed audience seating for invited guests, and participated in the campfire cultural gala as performers and attendees.',
+        title: 'Arunamala Material Transportation & Culturals',
+        points: [
+          'Visited Arunamala for material transportation',
+          'Rehearsal and performance of cultural programme',
+          'Discussed objectives for next day’s cleaning'
+        ],
+        note: 'Visited Arunamala for material transportation. Rehearsal and performance of cultural programme. Discussed objectives for next day’s cleaning.'
       },
       {
         day: 5,
-        title: 'Departure & Closing Ceremony',
-        note: 'Completed final dormitory cleanup and baggage handling. Attended the closing ceremony, collected certificates, and boarded the return convoy to college.',
-      },
+        title: 'Campsite Cleaning, Meppadi Town Service & Final Evaluation',
+        points: [
+          'Fulfilled cleaning duties throughout the campsite',
+          'Visited Meppadi Town — participated in an inauguration ceremony headed by Panchayat President and cleaned assigned public premises',
+          'Engaged in final camp evaluation'
+        ],
+        note: 'Fulfilled cleaning duties throughout the campsite. Visited Meppadi Town — participated in an inauguration ceremony headed by Panchayat President and cleaned assigned public premises. Engaged in final camp evaluation.'
+      }
     ]
   },
   {
     id: 'group-3',
     name: 'Group 03',
     days: [
-      { 
-        day: 1, 
-        title: 'Assembly & Inauguration', 
-        note: 'First roll call and assembly completed. The inaugural ceremony started with a prayer song, welcome speech, followed by inauguration by Panchayat President, concluded with a vote of thanks. An evaluation camp-paper session followed.',
+      {
+        day: 1,
+        title: 'Camp Inauguration, Camp Paper & Member Meeting',
+        points: [
+          'Participated in camp inauguration',
+          'Presented camp paper during camp evaluation',
+          'Conducted meeting with all members'
+        ],
+        note: 'Participated in camp inauguration. Presented camp paper during camp evaluation. Conducted meeting with all members.'
       },
       {
         day: 2,
-        title: 'Classroom Cleaning Detail',
-        note: 'Deployed to the community school premises for a full morning of classroom cleaning, furniture arrangement, and courtyard sweeping.',
+        title: 'Chulukka School Ground & Premises Cleaning',
+        points: [
+          'Assigned to Chulukka for cleaning the ground and premises of a school',
+          'Discussed about next day’s cultural activities'
+        ],
+        note: 'Assigned to Chulukka for cleaning the ground and premises of a school. Discussed about next day’s cultural activities.'
       },
       {
         day: 3,
-        title: 'Outdoor Survey & Rope Work',
-        note: 'Joined the stream rope-bridge construction team. Carried anchor timber, learned basic knotting techniques, and assisted with tension testing.',
+        title: 'Arunamala Material Transport & Cultural Performance',
+        points: [
+          'Visited Arunamala for material transportation to construction site',
+          'Rehearsed and performed cultural programme'
+        ],
+        note: 'Visited Arunamala for material transportation to construction site. Rehearsed and performed cultural programme.'
       },
       {
         day: 4,
-        title: 'Stage Performances & Campfire',
-        note: 'Delivered a folk dance number during the cultural gala and later joined the campfire circle for storytelling and acoustic music.',
+        title: 'Campsite Cleaning & Arunamala Brick Hauling (300+)',
+        points: [
+          'Cleaned the inner and outer premises of the campsite',
+          'Visited Arunamala for material transportation to construction site — transported over 300 bricks',
+          'Cleaned and arranged items for next day’s food preparation'
+        ],
+        note: 'Cleaned the inner and outer premises of the campsite. Visited Arunamala for material transportation to construction site — transported over 300 bricks. Cleaned and arranged items for next day’s food preparation.'
       },
       {
         day: 5,
-        title: 'Final Evaluation & Departure',
-        note: 'Submitted group evaluation forms and individual camp journals. Completed site inspection sweep before boarding buses for the return journey.',
-      },
+        title: 'Joint Food Preparation (Chicken Biriyani) & Waste Disposal',
+        points: [
+          'Food preparation for the whole camp and overall waste disposal for the day along with group 6',
+          'Prepared chicken biriyani'
+        ],
+        note: 'Food preparation for the whole camp and overall waste disposal for the day along with group 6. Prepared chicken biriyani.'
+      }
     ]
   },
   {
     id: 'group-4',
     name: 'Group 04',
     days: [
-      { 
-        day: 1, 
-        title: 'Camp & Mess Duty', 
-        note: 'Travelled from college to the campsite in Wayanad early in the morning and reached around 2 o\'clock for lunch prepared by pre-campers. Took over kitchen duty: made evening tea, snacks, and dinner for all campers.',
+      {
+        day: 1,
+        title: 'Campsite Settlement & Full Camp Dinner Preparation',
+        points: [
+          'Settled into campsite',
+          'Prepared dinner for the whole camp'
+        ],
+        note: 'Settled into campsite. Prepared dinner for the whole camp.'
       },
       {
         day: 2,
-        title: 'Continuation of Mess Duties',
-        note: 'Managed morning breakfast preparation, utensil washing, and procurement runs to the local market. Coordinated with the Finance Committee for daily expense tracking.',
+        title: 'Early Arunamala Material Transport & Daily Evaluation',
+        points: [
+          'Made an early start to Arunamala for material transportation',
+          'Participated in daily camp evaluation'
+        ],
+        note: 'Made an early start to Arunamala for material transportation. Participated in daily camp evaluation.'
       },
       {
         day: 3,
-        title: 'Community Painting Project',
-        note: 'Joined the community outreach painting team, repainting classroom walls and corridors at the Meppadi local school.',
+        title: 'Township House Visits & 5-Variety Sapling Distribution',
+        points: [
+          'Assigned to township — conducted house visits, distributed five varieties of saplings',
+          'Participated in daily camp evaluation',
+          'Conducted meeting to discuss next day’s duties'
+        ],
+        note: 'Assigned to township — conducted house visits, distributed five varieties of saplings. Participated in daily camp evaluation. Conducted meeting to discuss next day’s duties.'
       },
       {
         day: 4,
-        title: 'Cultural Programme Backstage',
-        note: 'Handled backstage coordination for the cultural night — managing costumes, cue sheets, and performer timings.',
+        title: 'Poolakkunnu Material Transport & Cultural Performances',
+        points: [
+          'Assigned to Poolakkunnu for material transportation — transported M-sand and mud bricks',
+          'Rehearsed and participated in the day’s cultural performances'
+        ],
+        note: 'Assigned to Poolakkunnu for material transportation — transported M-sand and mud bricks. Rehearsed and participated in the day’s cultural performances.'
       },
       {
         day: 5,
-        title: 'Kitchen Handover & Departure',
-        note: 'Cleaned and handed over the kitchen and mess equipment to facility management. Joined the final muster and departed with the convoy.',
+        title: 'Panchayat President Gathering, Meppadi Cleaning & Camp Paper',
+        points: [
+          'Participated in an inaugural gathering headed by Panchayat President',
+          'Visited Meppadi Town for cleaning the assigned public premises',
+          'Presented camp paper during camp evaluation'
+        ],
+        note: 'Participated in an inaugural gathering headed by Panchayat President. Visited Meppadi Town for cleaning the assigned public premises. Presented camp paper during camp evaluation.'
       },
+      {
+        day: 6,
+        title: 'Final Campsite Sweep & Premises Cleaning',
+        points: [
+          'Conducted a final cleaning of the inner and outer premises of the campsite.'
+        ],
+        note: 'Conducted a final cleaning of the inner and outer premises of the campsite.'
+      }
     ]
   },
   {
     id: 'group-5',
     name: 'Group 05',
     days: [
-      { 
-        day: 1, 
-        title: 'Reaching the Camp Site', 
-        note: 'Pre-camp members made breakfast and lunch, washed utensils, cleaned the surroundings, and prepared the premises for the arrival of remaining camp members.',
+      {
+        day: 1,
+        title: 'Pre-Camp Food Preparation, Setup & Premises Cleaning',
+        points: [
+          'Pre-camp members made breakfast and lunch for the rest of the campers',
+          'Cleaned and arranged premises for the campers',
+          'Arranged items for next day’s food preparation duty'
+        ],
+        note: 'Pre-camp members made breakfast and lunch for the rest of the campers. Cleaned and arranged premises for the campers. Arranged items for next day’s food preparation duty.'
       },
       {
         day: 2,
-        title: 'Tools & Sanitation Management',
-        note: 'Received sanitation kits from the Tools Committee and oversaw cleaning equipment distribution to other groups. Maintained the sanitation log throughout the day.',
+        title: 'Full Camp Food Preparation & Experience Sharing',
+        points: [
+          'Prepared food for the whole camp',
+          'Participated in the camp evaluation and shared experiences',
+          'Conducted meeting for next day’s duties'
+        ],
+        note: 'Prepared food for the whole camp. Participated in the camp evaluation and shared experiences. Conducted meeting for next day’s duties.'
       },
       {
         day: 3,
-        title: 'Valley Stream Work Detail',
-        note: 'Participated in the outdoor rope-bridge construction at the valley stream. Assisted with rope tensioning and maintained a safe buddy-system headcount.',
+        title: 'Campsite Cleaning & Poolakkunnu Material Transport',
+        points: [
+          'Assigned cleaning duties — cleaned the inner and outer premises of the campsite',
+          'Visited Poolakkunnu for material transportation — transported M-sand and mud bricks'
+        ],
+        note: 'Assigned cleaning duties — cleaned the inner and outer premises of the campsite. Visited Poolakkunnu for material transportation — transported M-sand and mud bricks.'
       },
       {
         day: 4,
-        title: 'Cultural Performance & Guest Hosting',
-        note: 'Performed a group folk number at the cultural stage and hosted visiting Panchayat guests. Participated in the campfire gathering later that evening.',
+        title: 'Arunamala Mud Brick Transport & Camp Paper Presentation',
+        points: [
+          'Assigned to Arunamala for material transportation — transported mud bricks',
+          'Presented camp paper during camp evaluation',
+          'Conducted meeting to discuss next day’s culturals'
+        ],
+        note: 'Assigned to Arunamala for material transportation — transported mud bricks. Presented camp paper during camp evaluation. Conducted meeting to discuss next day’s culturals.'
       },
       {
         day: 5,
-        title: 'Sweep & Departure',
-        note: 'Led the leave-no-trace sweep of the outdoor areas, cleared personal items from dormitories, and completed the final roll-call before departure.',
-      },
+        title: 'Meppadi Town Public Cleaning & Cultural Showcase',
+        points: [
+          'Participated in inauguration function and spent time at Meppadi Town for cleaning the assigned public premises',
+          'Rehearsed and performed the cultural events'
+        ],
+        note: 'Participated in inauguration function and spent time at Meppadi Town for cleaning the assigned public premises. Rehearsed and performed the cultural events.'
+      }
     ]
   },
   {
     id: 'group-6',
     name: 'Group 06',
     days: [
-      { 
-        day: 1, 
-        title: 'Cleaning Detail', 
-        note: 'Completed cleaning in front of several classrooms on the community school campus. Collected and disposed of debris responsibly.',
+      {
+        day: 1,
+        title: 'Campsite Settlement & Corridor Cleaning Duties',
+        points: [
+          'Settled into the camp site',
+          'Performed cleaning duties — corridors and open areas'
+        ],
+        note: 'Settled into the camp site. Performed cleaning duties — corridors and open areas.'
       },
       {
         day: 2,
-        title: 'Extended Campus Cleaning',
-        note: 'Continued cleaning duties covering the school courtyard, restrooms, and surrounding pathways. Tools were signed out from the Tools Committee.',
+        title: 'Arunamala Mud Brick Transport & Culturals',
+        points: [
+          'Visited Arunamala to transport mud bricks',
+          'Rehearsed and performed cultural activities'
+        ],
+        note: 'Visited Arunamala to transport mud bricks. Rehearsed and performed cultural activities.'
       },
       {
         day: 3,
-        title: 'Fieldwork & Landscaping',
-        note: 'Shifted to outdoor landscaping work, removing overgrown vegetation around the campus perimeter and planting saplings.',
+        title: 'Poolakkunnu Material Transport & Review Meeting',
+        points: [
+          'Visited Poolakkunnu for material transportation',
+          'Presented camp paper during camp evaluation',
+          'Conducted a meeting to review the day’s activities'
+        ],
+        note: 'Visited Poolakkunnu for material transportation. Presented camp paper during camp evaluation. Conducted a meeting to review the day’s activities.'
       },
       {
         day: 4,
-        title: 'Stage Setup & Cultural Night',
-        note: 'Assisted with erecting stage risers and managing crowd movement during the cultural gala. Participated in the post-performance campfire session.',
+        title: 'Arunamala Team Brick Haul (300+ Bricks)',
+        points: [
+          'Visited Arunamala to complete the assigned tasks — transported over 300 bricks as a team',
+          'Participated in daily camp evaluation',
+          'Cleaned and arranged items for next day’s food preparation and waste disposal'
+        ],
+        note: 'Visited Arunamala to complete the assigned tasks — transported over 300 bricks as a team. Participated in daily camp evaluation. Cleaned and arranged items for next day’s food preparation and waste disposal.'
       },
       {
         day: 5,
-        title: 'Final Cleanup & Closing',
-        note: 'Conducted the final round of campus cleaning, ensured zero waste was left behind, and attended the formal closing ceremony before boarding the convoy.',
-      },
+        title: 'Joint Kitchen Duty (Food & Waste), Final Review & Campfire',
+        points: [
+          'Food preparation for the whole camp and managed waste disposal for the day along with group 3',
+          'Participated in the final camp evaluation and campfire'
+        ],
+        note: 'Food preparation for the whole camp and managed waste disposal for the day along with group 3. Participated in the final camp evaluation and campfire.'
+      }
     ]
-  },
+  }
 ];
 
 const COMMITTEE_REPORTS = [
   {
-    id: 'report-1',
-    code: 'REP. 01',
-    title: 'Discipline Committee',
-    officer: 'Camp Discipline In-Charge',
-    mandate: 'Campus boundaries, schedule punctuality, night curfew & camper accountability',
+    id: 'com-prog',
+    code: 'COM 01',
+    name: 'Programme & Culturals',
+    title: 'Programme, Reception, and Culturals',
     days: [
       {
         day: 1,
-        date: 'October 14, 2026',
-        author: 'Discipline Committee Convener',
-        title: 'Arrival Protocol & Orientation Briefing',
-        status: '100% Present / Compliant',
-        content: 'Orientation and campsite briefing conducted upon arrival at Meppadi. The first evening roll call was convened at 18:00 hrs with all 100 campers present. Strict protocols regarding campus boundary demarcations and lights-out were announced. Dormitory inspection completed with zero disciplinary issues.',
-        highlights: [
-          '100% attendance recorded at 18:00 roll call',
-          'Camp curfew established at 22:00 hrs',
-          'Perimeter boundary markers explained to all 6 groups'
+        points: [
+          'Arranged equipments for the inaugural function - auditorium and stage settings, generator for power supply',
+          'Committee members took care of the lighting and sound of the entire event'
         ]
       },
       {
         day: 2,
-        date: 'October 15, 2026',
-        author: 'Discipline Committee Convener',
-        title: 'Morning Routine & Duty Allocation Decorum',
-        status: 'On Schedule',
-        content: 'Morning wake-up whistle sounded at 05:30 hrs. All 6 groups reported punctually for physical conditioning and the morning assembly. Monitored group conduct during duty handovers and classroom cleaning tasks. Dining hall queuing and etiquette maintained smoothly.',
-        highlights: [
-          'All groups punctual for 06:00 assembly',
-          'Zero unauthorized absences during work hours',
-          'Dining hall decorum strictly observed'
+        points: [
+          'Conducted sound check for the cultural event',
+          'Ensured smooth conduction of culturals - setting mic, and ensuring order of songs'
         ]
       },
       {
         day: 3,
-        date: 'October 16, 2026',
-        author: 'Discipline Committee Convener',
-        title: 'Field Work & Waterfront Safety Vigilance',
-        status: 'Heightened Supervision',
-        content: 'Supervised community outdoor projects and the stream rope knotting exercise. Strict buddy systems and safety perimeters along the valley stream were enforced. Regular headcounts conducted at 2-hour intervals. All campers returned safely to base camp prior to dusk.',
-        highlights: [
-          'Water safety perimeter enforced along the stream',
-          'Full headcounts verified at 10:00, 14:00, and 17:30 hrs',
-          'Safe return of all field crews certified'
+        points: [
+          'Cultural event delayed due to late arrival from worksite (Arunamala)',
+          'Received Principal Prof. Dr. Fr. Saju M.D. as part of reception duty',
+          'Arranged equipment and conducted sound check for the cultural events'
         ]
       },
       {
         day: 4,
-        date: 'October 17, 2026',
-        author: 'Discipline Committee Convener',
-        title: 'Cultural Gala & Campfire Security Protocol',
-        status: 'Orderly Gathering',
-        content: 'Oversaw decorum during the evening cultural program and the campfire gathering. Supervised visitor flow for invited local guests and Panchayat representatives. Maintained campfire safety clearance zones. Silent hours commenced at 22:30 hrs.',
-        highlights: [
-          'Designated seating managed for community guests',
-          'Campfire safety buffer zone strictly observed',
-          'Quiet hours initiated promptly at 22:30 hrs'
+        points: [
+          'Cultural event of two groups together - prepared and ensured audio',
+          'Event got delayed due to late arrival from worksite',
+          'Issues faced with feeder speaker later resolved'
         ]
       },
       {
         day: 5,
-        date: 'October 18, 2026',
-        author: 'Discipline Committee Convener',
-        title: 'Final Dormitory Sweep & Departure Muster',
-        status: 'Final Clearance Granted',
-        content: 'Final camp inspection conducted across all dormitory wings and common grounds. Supervised the comprehensive leave-no-trace site sweep. Final roll call at 09:30 hrs verified all campers, luggage, and personal kits accounted for prior to bus boarding.',
-        highlights: [
-          'Leave-no-trace inspection cleared with zero residue',
-          'Final roll call: all 100 campers present',
-          'Official clearance handover signed with facility management'
+        points: [
+          'Had three programmes to coordinate',
+          'Street play at 3 PM',
+          'Cultural event at Township at 5 PM',
+          'De Paul School Students event at 5:30 PM',
+          'Campers’ culturals at 6:30 PM',
+          'Campfire',
+          'By 4:30 PM, the team went to township to clear the area for the event',
+          'Campfire was set in the school ground, which was conducted at 12 AM'
         ]
       }
     ]
   },
   {
-    id: 'report-2',
-    code: 'REP. 02',
-    title: 'Tools Committee',
-    officer: 'Tools & Logistics Master',
-    mandate: 'Equipment inventory, work implements issuance, maintenance & safety returns',
+    id: 'com-travel',
+    code: 'COM 02',
+    name: 'Accommodation & Travel',
+    title: 'Accommodation and Travel',
     days: [
       {
         day: 1,
-        date: 'October 14, 2026',
-        author: 'Tools Committee In-Charge',
-        title: 'Store Audit & Pre-Camp Gear Distribution',
-        status: 'Inventory Audited',
-        content: 'Conducted initial inventory upon arrival at Wayanad camp store. Categorized 42 cleaning implements, 15 cooking vessels, 8 emergency lanterns, and maintenance toolboxes. Distributed sanitation kits to Group 05 for pre-camp site preparation.',
-        highlights: [
-          'Full inventory verified: 65 equipment items logged',
-          'Sanitation kits issued to Group 05',
-          'Storehouse check-in ledger initialized'
+        points: [
+          'Campers reached the campsite safely and on time',
+          'Cleared out luggage from the bus spaces'
         ]
       },
       {
         day: 2,
-        date: 'October 15, 2026',
-        author: 'Tools Committee In-Charge',
-        title: 'Classroom Sanitation & Field Implements Issue',
-        status: 'All Logged & Maintained',
-        content: 'Issued brooms, dustpans, scrubbers, and buckets to Group 06 for local classroom cleaning. Supervised maintenance and sharpening of spades. All equipment returned by 17:00 hrs, washed, and securely locked in the storehouse.',
-        highlights: [
-          '24 cleaning tools issued and retrieved',
-          'Tool integrity check: zero breakages or damages',
-          'Storage organized by group tag numbers'
+        points: [
+          'Arranged buses to and from the respective areas: Chulukka, Arunamala, Poolakkunnu',
+          'Conducted meeting - discussed duties for the next day and conducted briefing'
         ]
       },
       {
         day: 3,
-        date: 'October 16, 2026',
-        author: 'Tools Committee In-Charge',
-        title: 'Stream Construction & Rigging Hardware',
-        status: 'Heavy Gear Deployed',
-        content: 'Dispatched heavy-duty manila ropes, timber cross-binders, wire cutters, and earth-moving implements for the stream bridge construction. Conducted tension safety checks on all ropes prior to deployment. All outdoor gear returned clean and accounted for.',
-        highlights: [
-          '8 guide ropes and 12 timber clamps deployed',
-          'Rope tension and safety inspections passed',
-          'Full wash and drying cycle completed for wet equipment'
+        points: [
+          'Arranged buses for the respective areas: Arunamala, Poolakkunnu',
+          'Addressed the reported missing items from the buses'
         ]
       },
       {
         day: 4,
-        date: 'October 17, 2026',
-        author: 'Tools Committee In-Charge',
-        title: 'Stage Rigging, Sound Line & Hearth Equipment',
-        status: 'Stage & Safety Cleared',
-        content: 'Supported cultural stage setup with heavy-duty cables, mic stands, stage risers, and safety fire extinguishers for the campfire. Fire safety buckets filled with sand and water stationed adjacent to the hearth.',
-        highlights: [
-          'Acoustic stands and power cables secured safely',
-          '2 fire extinguishers + 4 sand buckets positioned',
-          'Safe disassembly and dry storage following cultural night'
+        points: [
+          'Arranged buses to and from Arunamala',
+          'Buses left to campsite on time',
+          'Group meeting and debriefing'
         ]
       },
       {
         day: 5,
-        date: 'October 18, 2026',
-        author: 'Tools Committee In-Charge',
-        title: 'Final Equipment Audit & Store Handover',
-        status: '100% Accounted / Clean',
-        content: 'Final physical audit of all tools and equipment borrowed from college stores and local suppliers. All metal tools wiped, oiled, and packed in transit crates. Verified zero loss and zero unreturned items across all 6 groups.',
-        highlights: [
-          '65/65 tools accounted for (100% return rate)',
-          'Metal implements oiled and sealed in transit crates',
-          'Handover clearance signed with faculty coordinator'
+        points: [
+          'Arranged buses to and from Town Panchayat Office',
+          'Shared updates during final camp evaluation'
+        ]
+      },
+      {
+        day: 6,
+        points: [
+          'Buses left from campsite to Kalamassery - slightly delayed due to logistical issues'
         ]
       }
     ]
   },
   {
-    id: 'report-3',
-    code: 'REP. 03',
-    title: 'Documentation Committee',
-    officer: 'Media & Field Secretary',
-    mandate: 'Photography, daily camp gazette publication, audio recording & final archive',
+    id: 'com-doc',
+    code: 'COM 03',
+    name: 'Publicity & Documentation',
+    title: 'Publicity, Documentation, and Camp Paper',
     days: [
       {
         day: 1,
-        date: 'October 14, 2026',
-        author: 'Documentation Committee Lead',
-        title: 'Inaugural Ceremony & Daily Bulletin Vol. 1',
-        status: 'Gazette Published',
-        content: 'Recorded video footage of the departure and arrival at Wayanad campsite. Photographed the inaugural ceremony attended by the Panchayat President. Drafted, proofread, and displayed the Day 01 Camp Daily Gazette on the main notice board.',
-        highlights: [
-          '48 archival photographs recorded',
-          'Inauguration speech transcribed',
-          'Day 1 camp bulletin published at 21:00 hrs'
+        points: [
+          'Captured geotagged photographs, untagged photographs, and videos for the inauguration and cultural event',
+          'Distributed flyers of the camp to all the campers',
+          'Oriented the group assigned to present the camp paper',
+          'Distributed daily reports to group and committee leaders'
         ]
       },
       {
         day: 2,
-        date: 'October 15, 2026',
-        author: 'Documentation Committee Lead',
-        title: 'Routine Logs, Faculty Orientation & Vol. 2',
-        status: 'Archive Updated',
-        content: 'Covered morning exercise assemblies, classroom cleaning operations by Group 06, and kitchen duties by Group 04. Compiled evaluation meeting minutes and published Day 02 Daily Gazette highlighting group contributions.',
-        highlights: [
-          '62 high-resolution photographs taken',
-          'Minutes of group leaders\' meeting compiled',
-          'Vol. 2 news bulletin printed and posted'
+        points: [
+          'Captured geotagged photographs, untagged photographs, and videos at Poolakkunnu, Arunamala, Chulukka, and Township',
+          'Conducted meeting with members - discussed seeking permission for electronic device access, and allocated duties to members to take initiative within their own groups'
         ]
       },
       {
         day: 3,
-        date: 'October 16, 2026',
-        author: 'Documentation Committee Lead',
-        title: 'Valley Stream Bridge & Video Journaling',
-        status: 'Multi-Media Captured',
-        content: 'Documented the outdoor rope bridge construction, fieldwork challenges, and student interviews. Maintained digital backup of all media files on external hard drives. Published Day 03 bulletin focusing on teamwork and environmental awareness.',
-        highlights: [
-          'Full-length documentary video clips recorded',
-          'Storage backup verified at 120GB',
-          'Vol. 3 bulletin featuring photo essay released'
+        points: [
+          'Oriented Group 2 on their camp paper presentation',
+          'Reviewed documented media taken at work sites',
+          'Reviewed daily reports received from committees and groups'
         ]
       },
       {
         day: 4,
-        date: 'October 17, 2026',
-        author: 'Documentation Committee Lead',
-        title: 'Cultural Night Coverage & Audio Recordings',
-        status: 'Special Edition Live',
-        content: 'Full media coverage of the Cultural Programme, including anchoring, folk dances, musical duets, and campfire storytelling. Recorded speeches of community leaders and student feedback. Prepared the draft of the final commemorative volume.',
-        highlights: [
-          'Complete stage performances recorded in high definition',
-          'Audio archives of camp songs digitized',
-          'Commemorative photo reel assembled'
+        points: [
+          'Captured geotagged photographs, untagged photographs, and videos at Poolakkunnu, Arunamala, and Township',
+          'Took photographs of the campsite and the surrounding premises.',
+          'Conducted meeting - instructed to compile all documented media into a drive link once the team returns to Kalamassery'
         ]
       },
       {
         day: 5,
-        date: 'October 18, 2026',
-        author: 'Documentation Committee Lead',
-        title: 'Final Field Journal Compilation & Handover',
-        status: 'Archive Sealed',
-        content: 'Conducted final group photo sessions and faculty testimonials. Compiled the comprehensive 5-day camp field journal archive, including statistical summaries, group reports, and high-resolution photo folders for official college submission.',
-        highlights: [
-          'Consolidated 5-Day Master Archive compiled',
-          'Official photo handover completed',
-          'Editorial field journal certified and archived'
+        points: [
+          'Captured geotagged photographs, untagged photographs, and videos at Meppadi Town',
+          'Compiled daily reports and noted the groups and committees yet to submit their reports',
+          'Shared overall updates and conveyed thanks to everyone involved, during the final camp evaluation'
         ]
       }
     ]
   },
   {
-    id: 'report-4',
-    code: 'REP. 04',
-    title: 'First Aid and Finance Committee',
-    officer: 'Health Officer & Camp Treasurer',
-    mandate: 'Emergency healthcare, medical post, petty cash, mess expenditure & auditing',
+    id: 'com-finance',
+    code: 'COM 04',
+    name: 'Finance & First Aid',
+    title: 'Finance, First Aid, and Crisis Management',
     days: [
       {
         day: 1,
-        date: 'October 14, 2026',
-        author: 'First Aid & Finance Convener',
-        title: 'Dispensary Setup & Initial Treasury Float',
-        status: 'Dispensary Active',
-        content: 'Established the camp medical station with emergency first-aid kit, ORS sachets, pain relievers, and antiseptic dressings. Initialized the camp treasury ledger with an opening float of ₹15,000 for emergency rations and fuel.',
-        highlights: [
-          'Medical station operational in quarters room 01',
-          'Opening float ₹15,000 verified and logged',
-          'Dispensary register logged 1 minor travel sickness case'
+        points: [
+          'Reached campsite and prepared first aid kits to be distributed',
+          'Conducted meeting - allocated duties within committee members'
         ]
       },
       {
         day: 2,
-        date: 'October 15, 2026',
-        author: 'First Aid & Finance Convener',
-        title: 'Routine Health Checks & Mess Procurements',
-        status: 'Normal Operations',
-        content: 'Conducted morning temperature and hydration checks. Treated two cases of mild fatigue and minor finger cuts from cleaning tasks. Verified and reimbursed daily vegetable, milk, and provisioning bills from Meppadi local market.',
-        highlights: [
-          '2 minor abrasions treated and dressed',
-          'Mess procurement expenses: ₹6,450 logged',
-          'All bills and vouchers audited and stamped'
+        points: [
+          'Prepared dettol mixes for work site',
+          'Provided first aid kits to all the group representatives within the committee',
+          'Discussed and noted today’s total finance spending'
         ]
       },
       {
         day: 3,
-        date: 'October 16, 2026',
-        author: 'First Aid & Finance Convener',
-        title: 'Mobile Worksite Aid & Field Disbursements',
-        status: 'Field Care Active',
-        content: 'Stationed a mobile first-aid kit at the outdoor stream work site. Treated three minor leech bites and administered ORS for hydration. Processed equipment transport disbursements and emergency supply receipts.',
-        highlights: [
-          'Mobile first-aid kit active on-site with emergency kit',
-          '3 leech bites treated with antiseptic care',
-          'Daily field expenses: ₹4,820 logged and verified'
+        points: [
+          'Prepared dettol mixes for work site',
+          'Provided money to the group representatives within the committee for their necessary needs; collected the bills later',
+          'Updated some medical equipment'
         ]
       },
       {
         day: 4,
-        date: 'October 17, 2026',
-        author: 'First Aid & Finance Convener',
-        title: 'Hydration Checks & Cultural Hospitality Budget',
-        status: 'Budget Reconciled',
-        content: 'Monitored camper hydration ahead of evening events. Prepared medical readiness for campfire thermal safety. Handled refreshments and hospitality budget for community guests and Panchayat officials.',
-        highlights: [
-          'Zero thermal burns or heat exhaustion incidents',
-          'Guest hospitality expenditure: ₹3,100 logged',
-          'First aid standby maintained until lights-out'
+        points: [
+          'Distributed money to the group representatives within the committee for their necessary needs; collected the bills later',
+          'Took campers who were in need of medical attention to the hospital'
         ]
       },
       {
         day: 5,
-        date: 'October 18, 2026',
-        author: 'First Aid & Finance Convener',
-        title: 'Final Financial Reconciliation & Health Log',
-        status: 'Books Balanced (₹0 Variance)',
-        content: 'Conducted final reconciliation of mess expenditure, transportation, and contingency funds. Re-packed unused medicines. Balanced all income and vouchers with zero discrepancies. Prepared final financial audit report.',
-        highlights: [
-          'Total camp expenditure reconciled to zero variance',
-          'Medical supplies audited and stored for college return',
-          'Final balance sheet signed and verified by coordinators'
+        points: [
+          'Prepared the day-to-day final account committee-wise and presented it during the camp evaluation',
+          'Provided first aid to those in need and took the campers who were in need of medical attention to the hospital',
+          'Conducted final meeting on-site - Return extra medical supplies to the college and settle the remaining accounts as soon as possible'
         ]
       }
     ]
   },
   {
-    id: 'report-5',
-    code: 'REP. 05',
-    title: 'Travel Committee',
-    officer: 'Transit & Transportation Coordinator',
-    mandate: 'Bus transit, convoy timing, local supply runs, VIP escorts & luggage logistics',
+    id: 'com-food',
+    code: 'COM 05',
+    name: 'Food & Waste',
+    title: 'Food and Waste Management',
     days: [
       {
         day: 1,
-        date: 'October 14, 2026',
-        author: 'Travel Committee Lead',
-        title: 'Inward Transit & Campsite Arrival Coordination',
-        status: 'On-Time Arrival',
-        content: 'Coordinated two chartered buses from college campus to Meppadi, Wayanad. Departed campus at 06:00 hrs with scheduled breakfast and comfort halts. Reached campsite safely at 14:00 hrs. Unloading and luggage transfers completed without damage.',
-        highlights: [
-          '2 buses arrived safely at 14:00 hrs',
-          '100 campers + faculty transit completed smoothly',
-          'Luggage unloaded and allocated to quarters'
+        points: [
+          'Stocked the kitchen and ordered utensils',
+          'Checked kitchen appliances and other equipment before use',
+          'Finalized food menu, and served food to the whole camp'
         ]
       },
       {
         day: 2,
-        date: 'October 15, 2026',
-        author: 'Travel Committee Lead',
-        title: 'Local Market Runs & Panchayat Liaison Conveyance',
-        status: 'Local Fleet Operating',
-        content: 'Arranged local utility vehicle for the mess committee\'s morning vegetable and ration runs to Meppadi market. Scheduled liaison trips for faculty coordinators to Panchayat office for administrative clearances.',
-        highlights: [
-          '2 utility trips to local market completed',
-          'Faculty liaison conveyance on schedule',
-          'Driver accommodations and fuel logs updated'
+        points: [
+          'Checked the condition of utensils and availability of groceries for the day’s menu',
+          'Supported and supervised Group 5',
+          'Cleaned the kitchen and ordered the next day’s menu items'
         ]
       },
       {
         day: 3,
-        date: 'October 16, 2026',
-        author: 'Travel Committee Lead',
-        title: 'Field Survey Shuttles & Heavy Gear Transport',
-        status: 'Field Shuttles Active',
-        content: 'Coordinated transfer of survey teams and heavy construction implements to the valley work area. Maintained radio contact with vehicle drivers. Safe return of all students and tools to camp base completed by 17:30 hrs.',
-        highlights: [
-          '4 shuttle rounds between camp and worksite',
-          'Timber and rope transfer facilitated',
-          'Zero transport bottlenecks recorded'
+        points: [
+          'Checked the condition of utensils and availability of groceries for the day’s menu',
+          'Supported and supervised Group 2',
+          'Prepared to welcome Principal to the camp with special menu'
         ]
       },
       {
         day: 4,
-        date: 'October 17, 2026',
-        author: 'Travel Committee Lead',
-        title: 'Dignitary Reception & Parking Logistics',
-        status: 'Protocol Maintained',
-        content: 'Provided transit escort for Panchayat dignitaries, local ward members, and guest performers arriving for the cultural gala. Coordinated vehicle parking and safety marshaling along the approach road.',
-        highlights: [
-          'VIP reception transport managed smoothly',
-          'Approach road parking organized with zero congestion',
-          'Post-event escort provided for guests'
+        points: [
+          'Checked the condition of utensils and availability of groceries for the day’s menu',
+          'Supported and supervised Group 1',
+          'Sent food to the campers going for on-site duty'
         ]
       },
       {
         day: 5,
-        date: 'October 18, 2026',
-        author: 'Travel Committee Lead',
-        title: 'Departure Logistics & Homeward Convoy',
-        status: 'Safe Return Confirmed',
-        content: 'Conducted pre-departure vehicle mechanical checks on both chartered buses. Coordinated systematic luggage loading by groups at 09:30 hrs. Departed Wayanad campsite at 10:30 hrs. Arrived safely back at college campus at 18:30 hrs.',
-        highlights: [
-          'Pre-trip vehicle safety inspection cleared',
-          'Buses departed campsite promptly at 10:30 hrs',
-          '100% safe return to college campus confirmed'
+        points: [
+          'Checked the condition of utensils and availability of groceries for the day’s menu',
+          'Supported and supervised Group 3 & 6',
+          'Sent food to the campers going for on-site duty'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'com-disc',
+    code: 'COM 06',
+    name: 'Discipline & Monitoring',
+    title: 'Discipline and Monitoring',
+    days: [
+      {
+        day: 1,
+        points: [
+          'Figured out the rules and regulations for maintaining order',
+          'Supported with room allocation and maintaining order',
+          'Conducted meeting - distributed bedtime and wake-up duties and other responsibilities among the members'
+        ]
+      },
+      {
+        day: 2,
+        points: [
+          'Adequately managed time in between and throughout the day’s activities; ensured smooth flow of overall group activities',
+          'Informed the overall rules and regulations during the morning assembly',
+          'Conducted meeting - coordination of work between members'
+        ]
+      },
+      {
+        day: 3,
+        points: [
+          'Managed proper wake-up time and prompt attendance during morning assembly',
+          'Managed discipline during field duties: committee members within groups took charge',
+          'Conducted meeting - took suggestions from group members regarding maintaining discipline within their own groups'
+        ]
+      },
+      {
+        day: 4,
+        points: [
+          'Managed proper wake-up time and prompt attendance during morning assembly',
+          'Ensured smooth flow of activities both at campsite and work sites',
+          'Conducted meeting - members must ensure their group members follow decorum during next day’s field work'
+        ]
+      },
+      {
+        day: 5,
+        points: [
+          'Morning assembly and departure to work site occurred smoothly',
+          'Conducted final review meeting',
+          'Shared updates and suggestions during final camp evaluation'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'com-tools',
+    code: 'COM 07',
+    name: 'Tools & Work',
+    title: 'Tools and Work',
+    days: [
+      {
+        day: 1,
+        points: [
+          'Reached campsite and scheduled work to be divided among different groups',
+          'Cleaned and arranged the necessary for next day’s field work',
+          'Conducted meeting - how to instruct maintenance and cleanliness of tools to group members'
+        ]
+      },
+      {
+        day: 2,
+        points: [
+          'Tools were set out for each group; groups collect their tools and record them in the log book',
+          'Ensured the tools were brought back clean and in proper count. Recorded some damages.',
+          'Conducted meeting - divided work among the groups for the next day'
+        ]
+      },
+      {
+        day: 3,
+        points: [
+          'Explained the work site and duties during the morning assembly',
+          'Distributed the tools and ensured their signatures in the log book; ensured return of all tools and examined for any damage',
+          'Conducted meeting - planned and organized tool distribution like how and who will be doing it, etc.'
+        ]
+      },
+      {
+        day: 4,
+        points: [
+          'Gave the camp an overview of the tools and their appropriate needs',
+          'Ensured the tools were brought back clean and in proper count. Recorded some damages.',
+          'Conducted meeting - divided work among the groups for the next day'
+        ]
+      },
+      {
+        day: 5,
+        points: [
+          'Distributed tools as per the group, and supported students at Meppadi Gram Panchayat and Meppadi L.P. School',
+          'Checked for any loss or damage of tools before loading them into the buses',
+          'Conducted the overall review of the group and conveyed thanks to everyone in involved, during the camp evaluation'
         ]
       }
     ]
@@ -710,16 +807,36 @@ const FINAL_CAMP_VIDEO = {
   videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
 };
 
+const CAMP_TIMETABLE = [
+  { time: '4:30 AM', activity: 'Morning wake-up' },
+  { time: '6:00 AM', activity: 'Assembly' },
+  { time: '7:00 AM', activity: 'Morning prayer / devotional session' },
+  { time: '7:30 AM', activity: 'Voluntary labour' },
+  { time: '9:00 AM', activity: 'Voluntary labour continues' },
+  { time: '11:00 AM', activity: 'Refreshments' },
+  { time: '11:15 AM', activity: 'Voluntary labour continues' },
+  { time: '1:00 PM', activity: 'Lunch' },
+  { time: '2:00 PM', activity: 'Household visits' },
+  { time: '4:30 PM', activity: 'Break' },
+  { time: '6:00 PM', activity: 'Cultural programmes' },
+  { time: '8:15 PM', activity: 'Dinner' },
+  { time: '9:15 PM', activity: 'Club evaluation' },
+  { time: '10:00 PM', activity: 'Good night' },
+];
+
 export default function App() {
   const [offset, setOffset] = useState(0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [activeReportIndex, setActiveReportIndex] = useState(0);
   const [activeReportDayIndex, setActiveReportDayIndex] = useState(0);
-  const [committeeViewMode, setCommitteeViewMode] = useState('single'); // 'single' or 'all'
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videoError, setVideoError] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
   const [isAutoPlayActive, setIsAutoPlayActive] = useState(false);
+  const [activeArchiveSection, setActiveArchiveSection] = useState(null);
+  const [isArchiveCollapsed, setIsArchiveCollapsed] = useState(false);
+
   
   // fade keys for content transitions
   const [groupFadeKey, setGroupFadeKey] = useState(0);
@@ -734,8 +851,15 @@ export default function App() {
   const finalVideoRef = useRef(null);
   const thanksRef = useRef(null);
   const epilogueRef = useRef(null);
+  const preCampRef = useRef(null);
+  const postCampRef = useRef(null);
+  const dePaulThanksRef = useRef(null);
+  const campTimetableRef = useRef(null);
+  const endRef = useRef(null);
+  const awardsRef = useRef(null);
+  const helpingHandsRef = useRef(null);
 
-  const sectionRefs = [heroRef, facultyRef, leadersRef, journalRef, reportsRef, videoRef, finalVideoRef, thanksRef, epilogueRef];
+
 
   const activeGroup = GROUP_DATA[activeGroupIndex];
   const activeDay = activeGroup.days[activeDayIndex] || activeGroup.days[0];
@@ -769,6 +893,97 @@ export default function App() {
     setActiveDayIndex(idx);
     setDayFadeKey((k) => k + 1);
   };
+
+  // Sequential side-arrow navigation for groups (Group 1 Day1 -> ... -> Group 6 Day5, wraps)
+  const advanceGroup = (dir) => {
+    if (dir > 0) {
+      if (activeDayIndex < activeGroup.days.length - 1) {
+        switchDay(activeDayIndex + 1);
+      } else if (activeGroupIndex < GROUP_DATA.length - 1) {
+        switchGroup(activeGroupIndex + 1);
+      } else {
+        switchGroup(0);
+      }
+    } else {
+      if (activeDayIndex > 0) {
+        switchDay(activeDayIndex - 1);
+      } else if (activeGroupIndex > 0) {
+        const prevGroup = GROUP_DATA[activeGroupIndex - 1];
+        setActiveGroupIndex(activeGroupIndex - 1);
+        setActiveDayIndex(prevGroup.days.length - 1);
+        setGroupFadeKey((k) => k + 1);
+        setDayFadeKey((k) => k + 1);
+      } else {
+        const lastGroup = GROUP_DATA[GROUP_DATA.length - 1];
+        setActiveGroupIndex(GROUP_DATA.length - 1);
+        setActiveDayIndex(lastGroup.days.length - 1);
+        setGroupFadeKey((k) => k + 1);
+        setDayFadeKey((k) => k + 1);
+      }
+    }
+  };
+
+  // Sequential side-arrow navigation for committee reports
+  const advanceReport = (dir) => {
+    if (dir > 0) {
+      if (activeReportDayIndex < activeReport.days.length - 1) {
+        setActiveReportDayIndex((i) => i + 1);
+      } else if (activeReportIndex < COMMITTEE_REPORTS.length - 1) {
+        setActiveReportIndex((i) => i + 1);
+        setActiveReportDayIndex(0);
+      } else {
+        setActiveReportIndex(0);
+        setActiveReportDayIndex(0);
+      }
+    } else {
+      if (activeReportDayIndex > 0) {
+        setActiveReportDayIndex((i) => i - 1);
+      } else if (activeReportIndex > 0) {
+        setActiveReportIndex((i) => i - 1);
+        setActiveReportDayIndex(COMMITTEE_REPORTS[activeReportIndex - 1].days.length - 1);
+      } else {
+        setActiveReportIndex(COMMITTEE_REPORTS.length - 1);
+        setActiveReportDayIndex(COMMITTEE_REPORTS[COMMITTEE_REPORTS.length - 1].days.length - 1);
+      }
+    }
+  };
+
+  const selectedPhotoIndexRef = useRef(selectedPhotoIndex);
+  const selectedVideoRef = useRef(selectedVideo);
+  useEffect(() => { selectedPhotoIndexRef.current = selectedPhotoIndex; }, [selectedPhotoIndex]);
+  useEffect(() => { selectedVideoRef.current = selectedVideo; }, [selectedVideo]);
+
+  // Show the shared photo archive only while the group journal or committee reports
+  // is the section occupying the middle of the viewport.
+  useEffect(() => {
+    const updateActiveArchive = () => {
+      const viewportCenter = window.innerHeight / 2;
+      const journalEl = journalRef.current;
+      const reportsEl = reportsRef.current;
+
+      const isAtSection = (element) => {
+        if (!element) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.top <= viewportCenter && rect.bottom > viewportCenter;
+      };
+
+      if (isAtSection(reportsEl)) {
+        setActiveArchiveSection('committees');
+      } else if (isAtSection(journalEl)) {
+        setActiveArchiveSection('groups');
+      } else {
+        setActiveArchiveSection(null);
+      }
+    };
+
+    updateActiveArchive();
+    window.addEventListener('scroll', updateActiveArchive, { passive: true });
+    window.addEventListener('resize', updateActiveArchive);
+    return () => {
+      window.removeEventListener('scroll', updateActiveArchive);
+      window.removeEventListener('resize', updateActiveArchive);
+    };
+  }, []);
 
   // Automated Day & Group Progression
   useEffect(() => {
@@ -818,10 +1033,25 @@ export default function App() {
         return;
       }
 
+      // Side-arrow sequential navigation for groups and committee reports
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && selectedVideo === null) {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        const scrollY = window.pageYOffset;
+        const journalTop = journalRef.current?.offsetTop || 0;
+        const reportsTop = reportsRef.current?.offsetTop || 0;
+        if (Math.abs(scrollY - journalTop) <= Math.abs(scrollY - reportsTop)) {
+          advanceGroup(dir);
+        } else {
+          advanceReport(dir);
+        }
+        return;
+      }
+
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
         const currentScroll = window.pageYOffset;
-        const sectionPositions = sectionRefs.map((ref) => ref.current?.offsetTop || 0);
+        const sectionPositions = Array.from(document.querySelectorAll('#sahayatra-root > section')).map((section) => section.offsetTop);
 
         if (e.key === 'ArrowDown') {
           const nextTarget = sectionPositions.find((pos) => pos > currentScroll + 50);
@@ -840,10 +1070,56 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedPhotoIndex, selectedVideo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPhotoIndex, selectedVideo, activeGroupIndex, activeDayIndex, activeReportIndex, activeReportDayIndex]);
+
 
   return (
-    <div style={{ backgroundColor: '#2C221E', minHeight: '100vh', color: '#FBF7EE', fontFamily: 'serif' }}>
+    <>
+      <style>{`
+        html {
+          scroll-behavior: smooth;
+          scroll-snap-type: y mandatory;
+          scroll-padding-top: 0;
+        }
+
+        body {
+          margin: 0;
+          overscroll-behavior-y: contain;
+        }
+
+        #sahayatra-root > section {
+          box-sizing: border-box;
+          min-height: 100vh;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+        }
+
+        /* Keep short sections the same full-slide height as the rest.
+           Long sections can still grow naturally to fit their content. */
+        #sahayatra-root > section > div {
+          box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+          #sahayatra-root > section {
+            min-height: 100svh;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          html {
+            scroll-behavior: auto;
+          }
+        }
+
+        @media (max-width: 768px) {
+          html {
+            scroll-snap-type: y proximity;
+          }
+        }
+      `}</style>
+      <div id="sahayatra-root" style={{ backgroundColor: '#2C221E', minHeight: '100vh', color: '#FBF7EE', fontFamily: 'serif' }}>
       
       {/* SECTION 1: HERO PARALLAX */}
       <section ref={heroRef} style={{
@@ -885,15 +1161,37 @@ export default function App() {
             transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
-          <span style={{ fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', color: '#E2D4BA', display: 'block', marginBottom: '15px' }}>
-            5 Days Among the Fog & Pines
+          <span style={{
+            fontSize: '12px',
+            letterSpacing: '3px',
+            color: '#E2D4BA',
+            display: 'block',
+            marginBottom: '20px'
+          }}>
+            SOCIAL SENSITISATION CAMP
           </span>
-          <h1 style={{ fontFamily: 'Title', fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 'bold', lineHeight: 1.15, marginBottom: '15px', color: '#FBF7EE' }}>
-            Where the Forest Kept Our Secrets
-          </h1>
-          <p style={{ fontSize: '0.95rem', color: '#E2D4BA', fontWeight: 300, fontFamily: 'sans-serif', lineHeight: 1.6 }}>
-            A record of cold morning dew, thick mountain fog, and campfire smoke.
-          </p>
+
+          <img
+            src={sahayatraLogo}
+            alt="Sahayathra 2026 Logo"
+            style={{
+              width: '100%',
+              maxWidth: '850px',
+              height: 'auto',
+              display: 'block',
+              margin: '0 auto 20px',
+              objectFit: 'contain'
+            }}
+          />
+
+          <h2 style={{
+            fontSize: 'clamp(1.2rem, 2.5vw, 2rem)',
+            color: '#FBF7EE',
+            lineHeight: 1.5,
+            margin: 0
+          }}>
+            സമൂഹത്തോടൊപ്പം മാറ്റത്തിലേക്ക് ഒരു യാത്ര
+          </h2>
         </div>
 
         <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: '#C5B496', fontFamily: 'monospace', fontSize: '9px', letterSpacing: '2px' }}>
@@ -1169,17 +1467,208 @@ export default function App() {
       </section>
 
 
-      {/* SECTION 4: GROUP JOURNAL — COMPACT PADDINGS + AUTOMATED LOOP TOGGLE */}
+      {/* SECTION: THANKS TO DE PAUL SCHOOL */}
+      <section ref={dePaulThanksRef} style={{
+        backgroundColor: '#EBE2CC',
+        color: '#2C221E',
+        padding: '120px 60px',
+        borderTop: '2px solid #7A3E29',
+        borderBottom: '2px solid #7A3E29',
+        position: 'relative',
+        overflow: 'hidden',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontFamily: 'monospace',
+            fontSize: '11px',
+            color: '#7A3E29',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+            marginBottom: '20px',
+            fontWeight: 'bold'
+          }}>
+            <span>✦ ✦ ✦</span>
+            <span>ACKNOWLEDGEMENT</span>
+            <span>✦ ✦ ✦</span>
+          </div>
+
+          <h2 style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(3rem, 6vw, 5rem)',
+            fontWeight: 'bold',
+            lineHeight: '1.05',
+            color: '#2C221E',
+            margin: '0 0 24px 0',
+            letterSpacing: '-0.5px'
+          }}>
+            Special Thanks to <br></br>
+            De Paul School
+          </h2>
+
+          <div style={{ width: '100px', height: '2px', backgroundColor: '#7A3E29', margin: '0 auto 32px auto' }} />
+
+          <p style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(1.25rem, 2.8vw, 2rem)',
+            fontStyle: 'italic',
+            color: '#3D302A',
+            lineHeight: '1.6',
+            fontWeight: 400,
+            margin: '0 auto',
+            maxWidth: '820px'
+          }}>
+            "We express our sincere gratitude to De Paul School for their support and cooperation in making Sahayathra 2026 a success."
+          </p>
+        </div>
+      </section>
+
+
+      {/* SECTION: PRE-CAMP */}
+      <section ref={preCampRef} style={{
+        backgroundColor: '#FBF7EE',
+        color: '#2C221E',
+        padding: '80px 60px',
+        borderTop: '1px solid #D0C2A7'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '36px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Section 03.5 // Pre-Camp
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Pre-Camp Preparation and Arrangements
+            </h2>
+          </div>
+          <div className="camp-cards">
+            <div className="camp-card">
+              <span className="camp-number">01</span>
+              <h3>Preparation for Departure</h3>
+              <ul>
+                <li>Bus arranged at college</li>
+                <li>Tools, food and gas cylinders loaded</li>
+                <li>Team departed early morning</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">02</span>
+              <h3>Campsite Setup</h3>
+              <ul>
+                <li>Kitchen and tarpaulins arranged</li>
+                <li>Flagpole and waste pit prepared</li>
+                <li>Lighting arranged despite rain and power failure</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">03</span>
+              <h3>Accommodation</h3>
+              <ul>
+                <li>Classrooms, auditorium and toilets inspected</li>
+                <li>Rooms allocated to participants</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">04</span>
+              <h3>Food and Logistics</h3>
+              <ul>
+                <li>Kitchen and cooking supplies organised</li>
+                <li>Generator and lighting arranged</li>
+                <li>Dinner prepared</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">05</span>
+              <h3>Main Camp Preparation</h3>
+              <ul>
+                <li>Breakfast and lunch arranged</li>
+                <li>Auditorium decorated and seating arranged</li>
+                <li>Inauguration coordinated</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: CAMP TIMETABLE */}
+      <section ref={campTimetableRef} style={{
+        backgroundColor: '#FBF7EE',
+        color: '#2C221E',
+        padding: '80px 60px',
+        borderTop: '1px solid #D0C2A7'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '12px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              SECTION 04 // DAILY ROUTINE
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Daily Timetable
+            </h2>
+          </div>
+          <p style={{ fontFamily: 'sans-serif', fontSize: '1rem', color: '#52443D', fontStyle: 'italic', margin: '0 0 32px 0' }}>
+            A day of service, reflection, and community
+          </p>
+
+          <div>
+            {CAMP_TIMETABLE.map((entry, idx) => (
+              <div
+                key={idx}
+                className="camp-timetable-row"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(110px, 140px) 1fr',
+                  gap: '24px',
+                  padding: '18px 0',
+                  borderBottom: idx < CAMP_TIMETABLE.length - 1 ? '1px solid rgba(44, 34, 30, 0.12)' : 'none',
+                  alignItems: 'baseline'
+                }}
+              >
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.95rem',
+                  color: '#7A3E29',
+                  letterSpacing: '0.5px',
+                  fontWeight: 600
+                }}>
+                  {entry.time}
+                </span>
+                <span style={{
+                  fontFamily: 'sans-serif',
+                  fontSize: '1rem',
+                  color: '#2C221E',
+                  lineHeight: 1.5
+                }}>
+                  {entry.activity}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <style>{`
+            @media (max-width: 600px) {
+              .camp-timetable-row {
+                grid-template-columns: 1fr !important;
+                gap: 4px !important;
+              }
+            }
+          `}</style>
+        </div>
+      </section>
+
+      {/* SECTION 4: GROUP JOURNAL */}
       <section ref={journalRef} style={{ backgroundColor: '#FBF7EE', color: '#2C221E', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
 
         {/* GROUP SELECTOR TABS & AUTOMATED PLAY TOGGLE */}
         <div style={{
           borderBottom: '1px solid #E0D4BE',
-          padding: '12px 30px',
+          padding: '14px 30px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '10px',
+          gap: '12px',
           flexWrap: 'wrap',
           backgroundColor: '#F4ECD8',
           position: 'sticky',
@@ -1188,7 +1677,7 @@ export default function App() {
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1px', marginRight: '4px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', letterSpacing: '1px', fontWeight: 'bold', marginRight: '4px' }}>
               GROUPS:
             </span>
             {GROUP_DATA.map((group, idx) => (
@@ -1201,7 +1690,7 @@ export default function App() {
                   fontFamily: 'monospace',
                   fontSize: '11px',
                   cursor: 'pointer',
-                  padding: '4px 8px',
+                  padding: '4px 10px',
                   color: activeGroupIndex === idx ? '#7A3E29' : '#8C7A70',
                   fontWeight: activeGroupIndex === idx ? 'bold' : 'normal',
                   borderBottom: activeGroupIndex === idx ? '2px solid #7A3E29' : '2px solid transparent',
@@ -1221,7 +1710,7 @@ export default function App() {
               border: '1px solid #7A3E29',
               fontFamily: 'monospace',
               fontSize: '10px',
-              padding: '4px 10px',
+              padding: '5px 12px',
               borderRadius: '2px',
               cursor: 'pointer',
               fontWeight: 'bold',
@@ -1236,22 +1725,22 @@ export default function App() {
           </button>
         </div>
 
-        {/* COMPACT GROUP LOG CONTAINER */}
+        {/* GROUP LOG CONTAINER */}
         <div
           key={groupFadeKey}
-          style={{ padding: '24px 40px 10px 40px', maxWidth: '1100px', margin: '0 auto', flex: 1, transition: 'opacity 0.3s ease' }}
+          style={{ padding: '36px 40px 180px 40px', maxWidth: '1100px', margin: '0 auto', width: '100%', boxSizing: 'border-box', flex: 1, transition: 'opacity 0.3s ease' }}
         >
-          <div style={{ marginBottom: '16px' }}>
-            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
               Section 04 // Field Journal — {activeGroup.name}
             </span>
-            <h2 style={{ fontFamily: 'Title', fontSize: '1.75rem', margin: 0, color: '#2C221E' }}>
-              {activeGroup.name} — Daily Log
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '2.4rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              {activeGroup.name} — Daily Field Log
             </h2>
           </div>
 
           {/* DAY SELECTOR TABS */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px', borderBottom: '1px solid #D0C2A7', paddingBottom: '10px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px', borderBottom: '1px solid #D0C2A7', paddingBottom: '12px' }}>
             {activeGroup.days.map((d, dIdx) => {
               const isActive = activeDayIndex === dIdx;
               return (
@@ -1259,13 +1748,13 @@ export default function App() {
                   key={d.day}
                   onClick={() => switchDay(dIdx)}
                   style={{
-                    background: isActive ? '#2C221E' : 'rgba(255,255,255,0.6)',
+                    background: isActive ? '#2C221E' : 'rgba(255,255,255,0.7)',
                     color: isActive ? '#FBF7EE' : '#52443D',
                     border: '1px solid',
                     borderColor: isActive ? '#2C221E' : '#C5B496',
                     fontFamily: 'monospace',
-                    fontSize: '10px',
-                    padding: '4px 12px',
+                    fontSize: '11px',
+                    padding: '5px 14px',
                     borderRadius: '2px',
                     cursor: 'pointer',
                     fontWeight: isActive ? 'bold' : 'normal',
@@ -1284,50 +1773,102 @@ export default function App() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'minmax(140px, 170px) 1fr',
-              gap: '30px',
+              gap: '36px',
               alignItems: 'flex-start',
               transition: 'opacity 0.3s ease'
             }}
           >
             <div>
               <span style={{
-                fontFamily: 'Title',
-                fontSize: '3.8rem',
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '4.2rem',
                 fontWeight: 'bold',
                 color: '#2C221E',
                 display: 'block',
-                lineHeight: '0.85',
-                marginBottom: '8px'
+                lineHeight: '0.88',
+                marginBottom: '10px'
               }}>
                 day<br />{String(activeDay.day).padStart(2, '0')}
               </span>
               <div style={{ width: '100%', height: '1px', backgroundColor: '#2C221E', marginBottom: '10px' }} />
-              <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#7A3E29', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 'bold' }}>
                 {activeGroup.name}
               </span>
             </div>
 
             <div>
               <h3 style={{
-                fontFamily: 'Title',
-                fontSize: '1.25rem',
-                fontStyle: 'italic',
-                color: '#52443D',
-                margin: '0 0 12px 0',
-                lineHeight: '1.3'
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '1.75rem',
+                fontWeight: '600',
+                color: '#2C221E',
+                margin: '0 0 16px 0',
+                lineHeight: '1.25'
               }}>
                 {activeDay.title}
               </h3>
-              <p style={{
-                fontFamily: 'sans-serif',
-                fontSize: '0.9rem',
-                color: '#42352F',
-                lineHeight: '1.65',
-                fontWeight: 300,
-                margin: '0 0 16px 0'
+
+              <div style={{
+                backgroundColor: '#FAF5E8',
+                border: '1px solid #D0C2A7',
+                borderLeft: '3px solid #7A3E29',
+                borderRadius: '4px',
+                padding: '22px 26px',
+                marginBottom: '22px',
+                boxShadow: '0 2px 8px rgba(44,34,30,0.04)'
               }}>
-                {activeDay.note}
-              </p>
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: '10px',
+                  color: '#7A3E29',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  display: 'block',
+                  marginBottom: '14px'
+                }}>
+                  RECORDED ACTIVITIES & TASKS
+                </span>
+
+                <ul style={{
+                  margin: 0,
+                  padding: 0,
+                  listStyle: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}>
+                  {(activeDay.points || [activeDay.note]).map((item, pIdx) => {
+                    const isMealItem = item.startsWith('Breakfast') || item.startsWith('Lunch') || item.startsWith('Dinner');
+                    return (
+                      <li
+                        key={pIdx}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '12px',
+                          fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif",
+                          fontSize: isMealItem ? '0.92rem' : '0.96rem',
+                          color: isMealItem ? '#6B5A52' : '#332722',
+                          lineHeight: '1.6',
+                          marginLeft: isMealItem ? '24px' : '0'
+                        }}
+                      >
+                        <span style={{
+                          color: '#7A3E29',
+                          fontSize: isMealItem ? '10px' : '14px',
+                          lineHeight: '1.6',
+                          userSelect: 'none',
+                          flexShrink: 0
+                        }}>
+                          {isMealItem ? '▪' : '✦'}
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
 
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
@@ -1341,7 +1882,7 @@ export default function App() {
                     color: '#2C221E',
                     fontFamily: 'monospace',
                     fontSize: '9px',
-                    padding: '4px 10px',
+                    padding: '5px 12px',
                     borderRadius: '2px',
                     transition: 'all 0.15s ease'
                   }}
@@ -1362,7 +1903,7 @@ export default function App() {
                     color: '#2C221E',
                     fontFamily: 'monospace',
                     fontSize: '9px',
-                    padding: '4px 10px',
+                    padding: '5px 12px',
                     borderRadius: '2px',
                     transition: 'all 0.15s ease'
                   }}
@@ -1374,447 +1915,304 @@ export default function App() {
           </div>
         </div>
 
-        {/* GLOBAL PHOTO FILMSTRIP */}
-        <div style={{ overflow: 'hidden', marginTop: '16px', borderTop: '1px solid #E0D4BE', borderBottom: '1px solid #E0D4BE', backgroundColor: '#EBE2CC', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '8px', left: '20px', zIndex: 5, fontFamily: 'monospace', fontSize: '9px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', backgroundColor: '#EBE2CC', padding: '2px 8px' }}>
-            ✦ PHOTO ARCHIVE
-          </div>
+      </section>
 
-          <div
-            style={{ display: 'flex', gap: '10px', padding: '30px 0 12px 0', width: 'max-content', overflowX: 'auto' }}
-          >
-            {ALL_PHOTOS.map((photo, idx) => (
-              <div
-                key={idx}
-                onClick={() => setSelectedPhotoIndex(idx)}
+
+      {/* SECTION 5: COMMITTEE REPORTS */}
+      <section ref={reportsRef} style={{ backgroundColor: '#F4ECD8', color: '#2C221E', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+
+        {/* COMMITTEE SELECTOR TABS */}
+        <div style={{
+          borderBottom: '1px solid #E0D4BE',
+          padding: '14px 30px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '12px',
+          flexWrap: 'wrap',
+          backgroundColor: '#EBE2CC',
+          position: 'sticky',
+          top: 0,
+          zIndex: 40,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', letterSpacing: '1px', fontWeight: 'bold', marginRight: '4px' }}>
+              COMMITTEES:
+            </span>
+            {COMMITTEE_REPORTS.map((rep, idx) => (
+              <button
+                key={rep.id}
+                onClick={() => {
+                  setActiveReportIndex(idx);
+                  setActiveReportDayIndex(0);
+                }}
                 style={{
-                  flexShrink: 0,
+                  background: 'none',
+                  border: 'none',
+                  fontFamily: 'monospace',
+                  fontSize: '11px',
                   cursor: 'pointer',
-                  overflow: 'hidden',
-                  borderRadius: '2px',
-                  boxShadow: '0 4px 10px rgba(44,34,30,0.12)',
-                  transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.03) translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 18px rgba(44,34,30,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 10px rgba(44,34,30,0.12)';
+                  padding: '4px 10px',
+                  color: activeReportIndex === idx ? '#7A3E29' : '#8C7A70',
+                  fontWeight: activeReportIndex === idx ? 'bold' : 'normal',
+                  borderBottom: activeReportIndex === idx ? '2px solid #7A3E29' : '2px solid transparent',
+                  transition: 'color 0.2s ease, border-color 0.2s ease'
                 }}
               >
-                <img
-                  src={photo.url}
-                  alt={photo.caption}
-                  style={{
-                    height: '160px',
-                    width: 'auto',
-                    objectFit: 'cover',
-                    display: 'block',
-                    pointerEvents: 'none'
-                  }}
-                />
-              </div>
+                {rep.name}
+              </button>
             ))}
+          </div>
+
+          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1px', fontWeight: 'bold' }}>
+            {activeReport.code}
+          </span>
+        </div>
+
+        {/* COMMITTEE LOG CONTAINER — EXACT SAME SIZE & PROPORTIONS AS GROUP REPORT */}
+        <div
+          style={{ padding: '36px 40px 240px 40px', maxWidth: '1100px', margin: '0 auto', width: '100%', boxSizing: 'border-box', flex: 1, transition: 'opacity 0.3s ease' }}
+        >
+          <div style={{ marginBottom: '24px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Section 05 // Archival Records — {activeReport.title}
+            </span>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '2.4rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              {activeReport.title} — Daily Activities
+            </h2>
+          </div>
+
+          {/* DAY SELECTOR TABS */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px', borderBottom: '1px solid #D0C2A7', paddingBottom: '12px' }}>
+            {activeReport.days.map((d, dIdx) => {
+              const isActive = activeReportDayIndex === dIdx;
+              return (
+                <button
+                  key={d.day}
+                  onClick={() => setActiveReportDayIndex(dIdx)}
+                  style={{
+                    background: isActive ? '#2C221E' : 'rgba(255,255,255,0.7)',
+                    color: isActive ? '#FBF7EE' : '#52443D',
+                    border: '1px solid',
+                    borderColor: isActive ? '#2C221E' : '#C5B496',
+                    fontFamily: 'monospace',
+                    fontSize: '11px',
+                    padding: '5px 14px',
+                    borderRadius: '2px',
+                    cursor: 'pointer',
+                    fontWeight: isActive ? 'bold' : 'normal',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  DAY 0{d.day}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ACTIVE DAY CONTENT — EXACT SAME 2-COLUMN STRUCTURE AS GROUP REPORT */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(140px, 170px) 1fr',
+              gap: '36px',
+              alignItems: 'flex-start',
+              transition: 'opacity 0.3s ease'
+            }}
+          >
+            <div>
+              <span style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '4.2rem',
+                fontWeight: 'bold',
+                color: '#2C221E',
+                display: 'block',
+                lineHeight: '0.88',
+                marginBottom: '10px'
+              }}>
+                day<br />{String(activeReportDay.day).padStart(2, '0')}
+              </span>
+              <div style={{ width: '100%', height: '1px', backgroundColor: '#2C221E', marginBottom: '10px' }} />
+              <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 'bold' }}>
+                {activeReport.code}
+              </span>
+            </div>
+
+            <div>
+              {/* RECORDED ACTIVITIES CARD — ONLY THE EXACT RAW POINTS */}
+              <div style={{
+                backgroundColor: '#FAF5E8',
+                border: '1px solid #D0C2A7',
+                borderLeft: '3px solid #7A3E29',
+                borderRadius: '4px',
+                padding: '22px 26px',
+                marginBottom: '22px',
+                boxShadow: '0 2px 8px rgba(44,34,30,0.04)'
+              }}>
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: '10px',
+                  color: '#7A3E29',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  display: 'block',
+                  marginBottom: '14px'
+                }}>
+                  COMMITTEE ACTIVITIES // {activeReport.title.toUpperCase()}
+                </span>
+
+                <ul style={{
+                  margin: 0,
+                  padding: 0,
+                  listStyle: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}>
+                  {activeReportDay.points.map((item, pIdx) => {
+                    const isSubItem = item.startsWith('Street play') || item.startsWith('Cultural event at Township') || item.startsWith('De Paul School') || item.startsWith('Campers’ culturals') || item.startsWith('Campfire');
+                    return (
+                      <li
+                        key={pIdx}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '12px',
+                          fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif",
+                          fontSize: isSubItem ? '0.92rem' : '0.96rem',
+                          color: isSubItem ? '#6B5A52' : '#332722',
+                          lineHeight: '1.6',
+                          marginLeft: isSubItem ? '24px' : '0'
+                        }}
+                      >
+                        <span style={{
+                          color: '#7A3E29',
+                          fontSize: isSubItem ? '10px' : '14px',
+                          lineHeight: '1.6',
+                          userSelect: 'none',
+                          flexShrink: 0
+                        }}>
+                          {isSubItem ? '▪' : '✦'}
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              {/* NAVIGATION BUTTONS */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  disabled={activeReportDayIndex === 0}
+                  onClick={() => setActiveReportDayIndex(Math.max(0, activeReportDayIndex - 1))}
+                  style={{
+                    opacity: activeReportDayIndex === 0 ? 0.3 : 1,
+                    cursor: activeReportDayIndex === 0 ? 'not-allowed' : 'pointer',
+                    background: 'none',
+                    border: '1px solid #8C7A70',
+                    color: '#2C221E',
+                    fontFamily: 'monospace',
+                    fontSize: '9px',
+                    padding: '5px 12px',
+                    borderRadius: '2px',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  ← PREV
+                </button>
+                <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#8C7A70' }}>
+                  DAY 0{activeReportDay.day} OF 0{activeReport.days.length}
+                </span>
+                <button
+                  disabled={activeReportDayIndex === activeReport.days.length - 1}
+                  onClick={() => setActiveReportDayIndex(Math.min(activeReport.days.length - 1, activeReportDayIndex + 1))}
+                  style={{
+                    opacity: activeReportDayIndex === activeReport.days.length - 1 ? 0.3 : 1,
+                    cursor: activeReportDayIndex === activeReport.days.length - 1 ? 'not-allowed' : 'pointer',
+                    background: 'none',
+                    border: '1px solid #8C7A70',
+                    color: '#2C221E',
+                    fontFamily: 'monospace',
+                    fontSize: '9px',
+                    padding: '5px 12px',
+                    borderRadius: '2px',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  NEXT →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
       </section>
 
-
-      {/* SECTION 5: COMMITTEE REPORTS */}
-      <section ref={reportsRef} style={{
-        backgroundColor: '#F4ECD8',
+      {/* SECTION: POST-CAMP */}
+      <section ref={postCampRef} style={{
+        backgroundColor: '#FBF7EE',
         color: '#2C221E',
         padding: '80px 60px',
         borderTop: '1px solid #D0C2A7'
       }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            borderBottom: '1px solid #2C221E',
-            paddingBottom: '16px',
-            marginBottom: '32px',
-            flexWrap: 'wrap',
-            gap: '20px'
-          }}>
-            <div>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
-                Section 05 // Archival Records (5-Day Log)
-              </span>
-              <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
-                Committee Reports
-              </h2>
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '36px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Section 06.5 // Post-Camp
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Post-Camp Activities and Return Journey
+            </h2>
+          </div>
+          <div className="camp-cards">
+            <div className="camp-card">
+              <span className="camp-number">01</span>
+              <h3>Packing and Cleanup</h3>
+              <ul>
+                <li>Tools and equipment packed</li>
+                <li>Kitchen and campsite cleaned</li>
+                <li>Waste disposed of properly</li>
+              </ul>
             </div>
-
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {COMMITTEE_REPORTS.map((rep, idx) => {
-                const isSelected = activeReportIndex === idx;
-                return (
-                  <button
-                    key={rep.id}
-                    onClick={() => {
-                      setActiveReportIndex(idx);
-                    }}
-                    style={{
-                      background: isSelected ? '#7A3E29' : 'transparent',
-                      border: isSelected ? '1px solid #7A3E29' : '1px solid rgba(44,34,30,0.2)',
-                      color: isSelected ? '#FBF7EE' : '#52443D',
-                      fontFamily: 'monospace',
-                      fontSize: '11px',
-                      cursor: 'pointer',
-                      padding: '6px 12px',
-                      borderRadius: '2px',
-                      fontWeight: isSelected ? 'bold' : 'normal',
-                      transition: 'all 0.2s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <span>{rep.code}</span>
-                    <span style={{ opacity: isSelected ? 0.9 : 0.7 }}>
-                      ({rep.title.replace(' Committee', '').replace(' and ', ' & ')})
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="camp-card">
+              <span className="camp-number">02</span>
+              <h3>Return Journey</h3>
+              <ul>
+                <li>Materials loaded onto the bus</li>
+                <li>Departure from campsite</li>
+                <li>Return to college</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">03</span>
+              <h3>Equipment Handover</h3>
+              <ul>
+                <li>Tools and supplies returned</li>
+                <li>Accounts and materials checked</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">04</span>
+              <h3>Review and Reflection</h3>
+              <ul>
+                <li>Group and committee evaluation</li>
+                <li>Experiences and feedback shared</li>
+              </ul>
+            </div>
+            <div className="camp-card">
+              <span className="camp-number">05</span>
+              <h3>Community Follow-up</h3>
+              <ul>
+                <li>Camp outcomes documented</li>
+                <li>Community engagement reviewed</li>
+              </ul>
             </div>
           </div>
-
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '16px',
-            backgroundColor: '#EBE2CC',
-            padding: '12px 20px',
-            borderRadius: '4px',
-            marginBottom: '35px',
-            border: '1px solid #D5C7AE'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1px', fontWeight: 'bold', marginRight: '4px' }}>
-                LOG ARCHIVE:
-              </span>
-              {activeReport.days.map((d, dIdx) => {
-                const isDayActive = committeeViewMode === 'single' && activeReportDayIndex === dIdx;
-                return (
-                  <button
-                    key={d.day}
-                    onClick={() => {
-                      setActiveReportDayIndex(dIdx);
-                      setCommitteeViewMode('single');
-                    }}
-                    style={{
-                      background: isDayActive ? '#2C221E' : 'rgba(255,255,255,0.7)',
-                      color: isDayActive ? '#FBF7EE' : '#52443D',
-                      border: '1px solid',
-                      borderColor: isDayActive ? '#2C221E' : '#C5B496',
-                      fontFamily: 'monospace',
-                      fontSize: '11px',
-                      padding: '5px 12px',
-                      borderRadius: '2px',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px'
-                    }}
-                  >
-                    <span style={{ fontWeight: 'bold' }}>DAY 0{d.day}</span>
-                    <span style={{ fontSize: '9px', opacity: 0.8 }}>({d.date.replace(', 2026', '').replace('October ', 'Oct ')})</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div>
-              <button
-                onClick={() => setCommitteeViewMode(committeeViewMode === 'all' ? 'single' : 'all')}
-                style={{
-                  background: committeeViewMode === 'all' ? '#7A3E29' : 'transparent',
-                  color: committeeViewMode === 'all' ? '#FBF7EE' : '#7A3E29',
-                  border: '1px solid #7A3E29',
-                  fontFamily: 'monospace',
-                  fontSize: '10px',
-                  padding: '6px 14px',
-                  borderRadius: '2px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  letterSpacing: '0.5px',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                {committeeViewMode === 'all' ? '✓ SHOWING ALL 5 DAYS' : '⊞ SPREAD ALL 5 DAYS'}
-              </button>
-            </div>
-          </div>
-
-          {committeeViewMode === 'single' && (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(280px, 350px) 1fr',
-              gap: '50px',
-              alignItems: 'flex-start'
-            }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1px' }}>
-                    {activeReport.code} // DAY 0{activeReportDay.day}
-                  </span>
-                  <span style={{
-                    backgroundColor: '#E2D4BA',
-                    color: '#7A3E29',
-                    fontFamily: 'monospace',
-                    fontSize: '9px',
-                    padding: '2px 6px',
-                    borderRadius: '2px',
-                    fontWeight: 'bold'
-                  }}>
-                    {activeReportDay.status}
-                  </span>
-                </div>
-
-                <h3 style={{ fontFamily: 'Title', fontSize: '1.5rem', fontStyle: 'italic', margin: '0 0 8px 0', lineHeight: '1.25', color: '#2C221E' }}>
-                  {activeReport.title}
-                </h3>
-                
-                <h4 style={{ fontFamily: 'Title', fontSize: '1.1rem', margin: '0 0 14px 0', color: '#52443D', fontWeight: 'normal' }}>
-                  {activeReportDay.title}
-                </h4>
-
-                <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#6B5A52', margin: '0 0 4px 0' }}>
-                  Lead: {activeReport.officer}
-                </p>
-                <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#8C7A70', margin: '0 0 16px 0' }}>
-                  Filed: {activeReportDay.date}
-                </p>
-
-                <div style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  borderLeft: '2px solid #7A3E29',
-                  padding: '10px 14px',
-                  marginBottom: '20px'
-                }}>
-                  <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#8C7A70', display: 'block', textTransform: 'uppercase', marginBottom: '2px' }}>
-                    Committee Mandate
-                  </span>
-                  <p style={{ fontFamily: 'sans-serif', fontSize: '0.82rem', color: '#52443D', margin: 0, lineHeight: 1.45 }}>
-                    {activeReport.mandate}
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    disabled={activeReportDayIndex === 0}
-                    onClick={() => setActiveReportDayIndex((prev) => Math.max(0, prev - 1))}
-                    style={{
-                      opacity: activeReportDayIndex === 0 ? 0.35 : 1,
-                      cursor: activeReportDayIndex === 0 ? 'not-allowed' : 'pointer',
-                      background: 'none',
-                      border: '1px solid #8C7A70',
-                      color: '#2C221E',
-                      fontFamily: 'monospace',
-                      fontSize: '10px',
-                      padding: '5px 12px',
-                      borderRadius: '2px',
-                      transition: 'all 0.15s ease'
-                    }}
-                  >
-                    ← PREV DAY
-                  </button>
-                  <button
-                    disabled={activeReportDayIndex === activeReport.days.length - 1}
-                    onClick={() => setActiveReportDayIndex((prev) => Math.min(activeReport.days.length - 1, prev + 1))}
-                    style={{
-                      opacity: activeReportDayIndex === activeReport.days.length - 1 ? 0.35 : 1,
-                      cursor: activeReportDayIndex === activeReport.days.length - 1 ? 'not-allowed' : 'pointer',
-                      background: 'none',
-                      border: '1px solid #8C7A70',
-                      color: '#2C221E',
-                      fontFamily: 'monospace',
-                      fontSize: '10px',
-                      padding: '5px 12px',
-                      borderRadius: '2px',
-                      transition: 'all 0.15s ease'
-                    }}
-                  >
-                    NEXT DAY →
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ minWidth: 0 }}>
-                <div style={{ width: '100%', height: '1px', backgroundColor: '#2C221E', marginBottom: '20px' }}></div>
-                
-                <p style={{
-                  fontFamily: 'Title',
-                  fontSize: '1.05rem',
-                  color: '#2C221E',
-                  lineHeight: '1.85',
-                  fontWeight: 300,
-                  textAlign: 'left',
-                  margin: '0 0 24px 0'
-                }}>
-                  "{activeReportDay.content}"
-                </p>
-
-                <div style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.55)',
-                  border: '1px dashed #C5B496',
-                  borderRadius: '3px',
-                  padding: '16px 20px',
-                  marginBottom: '25px'
-                }}>
-                  <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
-                    KEY HIGHLIGHTS & ACTION POINTS:
-                  </span>
-                  <ul style={{ margin: 0, paddingLeft: '18px', fontFamily: 'sans-serif', fontSize: '0.88rem', color: '#42352F', lineHeight: '1.6' }}>
-                    {activeReportDay.highlights.map((hl, hIdx) => (
-                      <li key={hIdx}>{hl}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  marginTop: '20px',
-                  fontFamily: 'monospace',
-                  fontSize: '9px',
-                  color: '#8C7A70'
-                }}>
-                  <span>ARCHIVAL AUTHENTICATION VERIFIED</span>
-                  <div style={{ flex: 1, display: 'flex', gap: '3px', alignItems: 'center' }}>
-                    {[...Array(20)].map((_, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          width: '1px',
-                          height: i % 5 === 0 ? '8px' : '3px',
-                          backgroundColor: i % 5 === 0 ? '#7A3E29' : '#C5B496'
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <span>VOL. 01 — SEC. 05 — DAY 0{activeReportDay.day}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {committeeViewMode === 'all' && (
-            <div>
-              <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', fontWeight: 'bold' }}>
-                  ALL 5 DAYS ARCHIVE // {activeReport.title.toUpperCase()}
-                </span>
-                <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#8C7A70' }}>
-                  Click any day card to inspect individual day
-                </span>
-              </div>
-
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
-                gap: '20px'
-              }}>
-                {activeReport.days.map((dayItem, dIdx) => (
-                  <div
-                    key={dayItem.day}
-                    onClick={() => {
-                      setActiveReportDayIndex(dIdx);
-                      setCommitteeViewMode('single');
-                    }}
-                    style={{
-                      backgroundColor: '#FAF5E8',
-                      border: '1px solid #D0C2A7',
-                      padding: '22px',
-                      borderRadius: '3px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#7A3E29';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#D0C2A7';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <span style={{ fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', color: '#7A3E29' }}>
-                          DAY 0{dayItem.day}
-                        </span>
-                        <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#8C7A70' }}>
-                          {dayItem.date}
-                        </span>
-                      </div>
-
-                      <h4 style={{ fontFamily: 'Title', fontSize: '1.15rem', margin: '0 0 6px 0', color: '#2C221E', lineHeight: 1.25 }}>
-                        {dayItem.title}
-                      </h4>
-
-                      <div style={{
-                        display: 'inline-block',
-                        backgroundColor: 'rgba(122, 62, 41, 0.1)',
-                        color: '#7A3E29',
-                        fontSize: '9px',
-                        fontFamily: 'monospace',
-                        padding: '2px 6px',
-                        borderRadius: '2px',
-                        marginBottom: '12px'
-                      }}>
-                        {dayItem.status}
-                      </div>
-
-                      <p style={{
-                        fontFamily: 'sans-serif',
-                        fontSize: '0.86rem',
-                        color: '#42352F',
-                        lineHeight: '1.55',
-                        margin: '0 0 14px 0'
-                      }}>
-                        "{dayItem.content}"
-                      </p>
-                    </div>
-
-                    <div style={{
-                      borderTop: '1px solid rgba(208, 194, 167, 0.4)',
-                      paddingTop: '12px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}>
-                      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#8C7A70' }}>
-                        {dayItem.highlights.length} key records logged
-                      </span>
-                      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#7A3E29', fontWeight: 'bold' }}>
-                        OPEN DAY 0{dayItem.day} →
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
         </div>
       </section>
-
 
       {/* SECTION: ARCHIVAL VIDEOS */}
       <section ref={videoRef} style={{
@@ -1868,7 +2266,7 @@ export default function App() {
               {CAMP_VIDEOS.map((video) => (
                 <div
                   key={video.id}
-                  onClick={() => setSelectedVideo(video)}
+                  onClick={() => { setSelectedVideo(video); setVideoError(false); }}
                   style={{
                     backgroundColor: '#FAF5E8',
                     border: '1px solid #D0C2A7',
@@ -2014,8 +2412,256 @@ export default function App() {
         </div>
       </section>
 
+                  {/* SECTION: AWARDS & RECOGNITION */}
+      <section ref={awardsRef} style={{
+        backgroundColor: '#FBF7EE',
+        color: '#2C221E',
+        padding: '90px 60px 100px',
+        borderTop: '1px solid #D0C2A7',
+        minHeight: '100vh',
+        height: 'auto',
+        boxSizing: 'border-box'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '40px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              SAHAYATHRA 2026 // HONOURS & MERIT
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.5rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Awards & Recognition
+            </h2>
+          </div>
 
-      {/* SECTION 5.C: FINAL CAMP REPRESENTATION FILM */}
+          {/* 01 — INDIVIDUAL RECOGNITION */}
+          <div style={{ marginBottom: '64px' }}>
+            <div style={{ marginBottom: '20px' }}>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
+                01 — INDIVIDUAL RECOGNITION
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.8rem', color: '#2C221E', margin: 0 }}>
+                Best Camper & Best Camp Girl
+              </h3>
+            </div>
+
+            <div className="awards-grid">
+              <article className="award-card award-featured">
+                <img src={bestCamper} alt="Jiss Abraham, Best Camper" />
+                <span className="award-label">BEST CAMPER</span>
+                <h3>Jiss Abraham</h3>
+              </article>
+              <article className="award-card award-featured">
+                <img src={bestCampgirl} alt="Parvathy Krishna, Best Camp Girl" />
+                <span className="award-label">BEST CAMP GIRL</span>
+                <h3>Parvathy Krishna</h3>
+              </article>
+            </div>
+          </div>
+
+          {/* 02 — APPRECIATION */}
+          <div style={{ marginBottom: '64px' }}>
+            <div style={{ marginBottom: '20px' }}>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
+                02 — APPRECIATION
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.8rem', color: '#2C221E', margin: 0 }}>
+                With Gratitude
+              </h3>
+            </div>
+
+            <div className="awards-grid-three">
+              <article className="award-card">
+                <img src={kannanChettan} alt="Kannan Chetan" />
+                <span className="award-label">APPRECIATION</span>
+                <h3>Kannan Chetan</h3>
+              </article>
+              <article className="award-card">
+                <img src={abhijithChettan} alt="Abhijith Chetan" />
+                <span className="award-label">APPRECIATION</span>
+                <h3>Abhijith Chetan</h3>
+              </article>
+              <article className="award-card">
+                <img src={benjamin} alt="Benjamin" />
+                <span className="award-label">APPRECIATION</span>
+                <h3>Benjamin</h3>
+              </article>
+            </div>
+          </div>
+
+          {/* 03 — TEAM RECOGNITION */}
+          <div>
+            <div style={{ marginBottom: '20px' }}>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
+                03 — TEAM RECOGNITION
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.8rem', color: '#2C221E', margin: 0 }}>
+                Best Group — Group 5
+              </h3>
+            </div>
+
+            <div className="award-group-feature">
+              <article className="award-card award-card-wide">
+                <img src={bestGroup} alt="Best Group — Group 5" className="award-img-wide" />
+                <span className="award-label">BEST GROUP — GROUP 5</span>
+                <h3>Group 5</h3>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: HELPING HANDS */}
+      <section ref={helpingHandsRef} style={{
+        backgroundColor: '#FAF5E8',
+        color: '#2C221E',
+        padding: '90px 60px 100px',
+        borderTop: '1px solid #D0C2A7',
+        minHeight: '100vh',
+        height: 'auto',
+        boxSizing: 'border-box'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '36px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              SAHAYATHRA 2026 // LOGISTICS & SUPPORT
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.5rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Helping Hands
+            </h2>
+          </div>
+
+          <div className="helping-hands-grid">
+            <article className="helping-hand-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <span className="award-label" style={{ margin: 0 }}>
+                  HELPING HANDS · 01
+                </span>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(122, 62, 41, 0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#7A3E29'
+                }}>
+                  <Bus size={22} strokeWidth={1.8} />
+                </div>
+              </div>
+              <h3 style={{ margin: '0 0 12px 0', color: '#2C221E', fontFamily: 'Title, serif', fontSize: '1.8rem' }}>
+                Abel Travels
+              </h3>
+              <p style={{ fontFamily: 'sans-serif', fontSize: '0.95rem', color: '#42352F', lineHeight: 1.7, margin: 0 }}>
+                With gratitude for supporting the journey and transportation arrangements of Sahayathra 2026.
+              </p>
+            </article>
+
+            <article className="helping-hand-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <span className="award-label" style={{ margin: 0 }}>
+                  HELPING HANDS · 02
+                </span>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(122, 62, 41, 0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#7A3E29'
+                }}>
+                  <Utensils size={22} strokeWidth={1.8} />
+                </div>
+              </div>
+              <h3 style={{ margin: '0 0 12px 0', color: '#2C221E', fontFamily: 'Title, serif', fontSize: '1.8rem' }}>
+                Pallathu Caterings
+              </h3>
+              <p style={{ fontFamily: 'sans-serif', fontSize: '0.95rem', color: '#42352F', lineHeight: 1.7, margin: 0 }}>
+                With gratitude for contributing to the food and hospitality arrangements of the camp.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+{/* SECTION 6: SPECIAL THANKS TO */}
+      <section ref={thanksRef} className="acknowledgement" style={{
+        backgroundColor: '#EBE2CC',
+        color: '#2C221E',
+        padding: '120px 60px',
+        borderTop: '2px solid #7A3E29',
+        borderBottom: '2px solid #7A3E29',
+        position: 'relative',
+        overflow: 'hidden',
+        textAlign: 'center'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontFamily: 'Title',
+          fontSize: 'clamp(5rem, 15vw, 12rem)',
+          fontWeight: 'bold',
+          color: 'rgba(122, 62, 41, 0.04)',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          zIndex: 0
+        }}>
+          GRATITUDE
+        </div>
+
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontFamily: 'monospace',
+            fontSize: '11px',
+            color: '#7A3E29',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+            marginBottom: '20px',
+            fontWeight: 'bold'
+          }}>
+            <span>✦ ✦ ✦</span>
+            <span>ACKNOWLEDGEMENT</span>
+            <span>✦ ✦ ✦</span>
+          </div>
+
+          <h2 style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(3rem, 6vw, 5rem)',
+            fontWeight: 'bold',
+            lineHeight: '1.05',
+            color: '#2C221E',
+            margin: '0 0 24px 0',
+            letterSpacing: '-0.5px'
+          }}>
+            Special Thanks to <br></br>
+            Rajagiri College of Social Sciences
+          </h2>
+
+          <div style={{ width: '100px', height: '2px', backgroundColor: '#7A3E29', margin: '0 auto 32px auto' }} />
+
+          <p style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(1.25rem, 2.8vw, 2rem)',
+            fontStyle: 'italic',
+            color: '#3D302A',
+            lineHeight: '1.6',
+            fontWeight: 400,
+            margin: '0 auto',
+            maxWidth: '820px'
+          }}>
+            "We express our sincere gratitude to our college management, faculty, and administration for their invaluable support, guidance, and backing in making Sahayathra 2026 a resounding success."
+          </p>
+        </div>
+      </section>
+
+            {/* SECTION 5.C: FINAL CAMP REPRESENTATION FILM */}
       <section ref={finalVideoRef} style={{
         backgroundColor: '#EBE2CC',
         color: '#2C221E',
@@ -2054,7 +2700,7 @@ export default function App() {
           </div>
 
           <div
-            onClick={() => setSelectedVideo(FINAL_CAMP_VIDEO)}
+            onClick={() => { setSelectedVideo(FINAL_CAMP_VIDEO); setVideoError(false); }}
             style={{
               backgroundColor: '#FAF5E8',
               border: '2px solid #7A3E29',
@@ -2210,82 +2856,124 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 6: SPECIAL THANKS TO */}
-      <section ref={thanksRef} style={{
-        backgroundColor: '#EBE2CC',
-        color: '#2C221E',
-        padding: '120px 60px',
-        borderTop: '2px solid #7A3E29',
-        borderBottom: '2px solid #7A3E29',
-        position: 'relative',
-        overflow: 'hidden',
-        textAlign: 'center'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontFamily: 'Title',
-          fontSize: 'clamp(5rem, 15vw, 12rem)',
-          fontWeight: 'bold',
-          color: 'rgba(122, 62, 41, 0.04)',
-          whiteSpace: 'nowrap',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          zIndex: 0
-        }}>
-          GRATITUDE
-        </div>
 
-        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '12px',
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            color: '#7A3E29',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            marginBottom: '20px',
-            fontWeight: 'bold'
-          }}>
-            <span>✦ ✦ ✦</span>
-            <span>ACKNOWLEDGEMENT</span>
-            <span>✦ ✦ ✦</span>
+      {/* SECTION: CLOSING / END */}
+      <section ref={endRef} className="closing-section">
+        <div className="closing-container">
+          <img
+            src={endImg}
+            alt="The journey ends, but the change continues"
+            className="closing-image"
+          />
+          <div className="closing-text-overlay">
+            <span className="closing-quote-primary">The journey ends,</span>
+            <span className="closing-quote-secondary">but the change continues.</span>
           </div>
-
-          <h2 style={{
-            fontFamily: 'Title',
-            fontSize: 'clamp(3rem, 6vw, 5rem)',
-            fontWeight: 'bold',
-            lineHeight: '1.05',
-            color: '#2C221E',
-            margin: '0 0 24px 0',
-            letterSpacing: '-0.5px'
-          }}>
-            Special Thanks to <br></br>
-            Rajagiri College of Social Sciences
-          </h2>
-
-          <div style={{ width: '100px', height: '2px', backgroundColor: '#7A3E29', margin: '0 auto 32px auto' }} />
-
-          <p style={{
-            fontFamily: 'Title',
-            fontSize: 'clamp(1.25rem, 2.8vw, 2rem)',
-            fontStyle: 'italic',
-            color: '#3D302A',
-            lineHeight: '1.6',
-            fontWeight: 400,
-            margin: '0 auto',
-            maxWidth: '820px'
-          }}>
-            "We express our sincere gratitude to our college management, faculty, and administration for their invaluable support, guidance, and backing in making Sahayathra 2026 a resounding success."
-          </p>
         </div>
       </section>
 
+      {activeArchiveSection && (
+        <div className="shared-photo-archive" style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 80,
+          backgroundColor: '#EBE2CC',
+          borderTop: '2px solid #D0C2A7',
+          boxShadow: '0 -4px 16px rgba(44,34,30,0.12)',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '8px 24px',
+              backgroundColor: '#E2D4BA',
+              borderBottom: isArchiveCollapsed ? 'none' : '1px solid #D0C2A7'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 'bold' }}>
+                  ✦ PHOTO ARCHIVE // 31 FIELD JOURNAL PHOTOGRAPHS
+                </span>
+                <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#6B5A52' }}>
+                  (Click any photo to open full-screen lightbox)
+                </span>
+              </div>
+
+              <button
+                onClick={() => setIsArchiveCollapsed((prev) => !prev)}
+                style={{
+                  background: 'none',
+                  border: '1px solid #7A3E29',
+                  color: '#7A3E29',
+                  fontFamily: 'monospace',
+                  fontSize: '9px',
+                  padding: '3px 10px',
+                  borderRadius: '2px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  letterSpacing: '1px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <span>{isArchiveCollapsed ? '▴ EXPAND FILMSTRIP' : '▾ MINIMIZE FILMSTRIP'}</span>
+              </button>
+            </div>
+
+            {!isArchiveCollapsed && (
+              <div style={{ width: '100%', overflow: 'hidden', padding: '14px 0 10px 0' }}>
+                <div
+                  className="anim-filmstrip"
+                  style={{ display: 'flex', gap: '10px', width: 'max-content' }}
+                  aria-label="Moving camp photo archive"
+                >
+                  {[...ALL_PHOTOS, ...ALL_PHOTOS].map((photo, idx) => {
+                    const photoIndex = idx % ALL_PHOTOS.length;
+                    return (
+                      <div
+                        key={photo.url + '-' + idx}
+                        onClick={() => setSelectedPhotoIndex(photoIndex)}
+                        style={{
+                          flexShrink: 0,
+                          cursor: 'pointer',
+                          overflow: 'hidden',
+                          borderRadius: '2px',
+                          boxShadow: '0 4px 10px rgba(44,34,30,0.12)',
+                          transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.03) translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 8px 18px rgba(44,34,30,0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 4px 10px rgba(44,34,30,0.12)';
+                        }}
+                      >
+                        <img
+                          src={photo.url}
+                          alt={photo.caption}
+                          style={{
+                            height: '135px',
+                            width: 'auto',
+                            objectFit: 'cover',
+                            display: 'block',
+                            pointerEvents: 'none'
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* SECTION 7: EPILOGUE & COLOPHON */}
       <section ref={epilogueRef} style={{
@@ -2518,14 +3206,32 @@ export default function App() {
               border: '1px solid rgba(226, 212, 186, 0.2)'
             }}
           >
-            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', backgroundColor: '#000' }}>
-              <video
-                src={selectedVideo.videoUrl}
-                poster={selectedVideo.thumbnail}
-                controls
-                autoPlay
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {videoError ? (
+                <div style={{ padding: '24px 30px', textAlign: 'center', color: '#FBF7EE', maxWidth: '520px' }}>
+                  <div style={{ color: '#E3D3B0', fontSize: '28px', marginBottom: '8px' }}>⚠</div>
+                  <h4 style={{ fontFamily: 'Title, serif', fontSize: '1.3rem', margin: '0 0 8px 0', color: '#FAF5E8' }}>
+                    Video Source Blocked (HTTP 403 Forbidden)
+                  </h4>
+                  <p style={{ fontFamily: 'sans-serif', fontSize: '0.85rem', color: '#C5B496', lineHeight: 1.6, margin: '0 0 14px 0' }}>
+                    The remote sample video bucket is returning <strong>HTTP 403 Forbidden</strong> on public media requests.
+                  </p>
+                  <div style={{ backgroundColor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(226, 212, 186, 0.2)', padding: '12px 16px', borderRadius: '4px', fontSize: '0.8rem', textAlign: 'left', color: '#E2D4BA', fontFamily: 'monospace' }}>
+                    ✦ <strong>To play your camp footage:</strong><br />
+                    1. Save your MP4 video into <code>public/</code> or <code>public/videos/</code><br />
+                    2. Set <code>videoUrl: '/your-video.mp4'</code> in <code>src/App.jsx</code>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  src={selectedVideo.videoUrl}
+                  poster={selectedVideo.thumbnail}
+                  controls
+                  autoPlay
+                  onError={() => setVideoError(true)}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              )}
             </div>
 
             <div style={{ padding: '20px 24px', backgroundColor: '#2C221E', color: '#FBF7EE' }}>
@@ -2549,5 +3255,6 @@ export default function App() {
       )}
 
     </div>
+    </>
   );
 }

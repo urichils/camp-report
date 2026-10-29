@@ -206,3 +206,331 @@
     border-right-color: var(--border);
   }
 }
+
+
+.acknowledgement {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #ede3cc;
+}
+
+.acknowledgement::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("./assets/rajagiri-logo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(65vw, 780px);
+  opacity: 0.06;
+  z-index: -1;
+  pointer-events: none;
+}
+
+
+.camp-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.camp-card {
+  background: #fffaf3;
+  border: 1px solid #e9ddce;
+  border-radius: 16px;
+  padding: 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.camp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(44, 34, 30, 0.08);
+}
+
+.camp-card h3 {
+  color: #2c221e;
+  font-size: 1.05rem;
+  margin: 0 0 14px;
+}
+
+.camp-card ul {
+  padding-left: 18px;
+  margin: 0;
+  line-height: 1.8;
+  color: #42352f;
+}
+
+.camp-number {
+  color: #7a3e29;
+  font-family: monospace;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .camp-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .camp-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.shared-photo-archive {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #EBE2CC;
+  border-top: 1px solid #D0C2A7;
+}
+
+.shared-photo-archive img {
+  max-height: 160px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .shared-photo-archive img {
+    max-height: 100px;
+  }
+}
+
+/* ==========================================================================
+   Awards & Recognition and Helping Hands Styles
+   ========================================================================== */
+.awards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin: 32px 0 56px;
+}
+
+.awards-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 28px 0 56px;
+}
+
+.award-card {
+  background: #FBF7EE;
+  border: 1px solid #D0C2A7;
+  padding: 18px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.award-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(44, 34, 30, 0.12);
+}
+
+.award-card img {
+  display: block;
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.award-featured img {
+  height: 420px;
+}
+
+.award-group-feature {
+  margin: 28px 0 0;
+}
+
+.award-card-wide,
+.award-group-feature .award-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.award-card-wide img,
+.award-img-wide {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.award-label {
+  display: block;
+  margin-top: 18px;
+  color: #7A3E29;
+  font: 11px monospace;
+  letter-spacing: 2px;
+}
+
+.award-card h3 {
+  margin: 10px 0 4px;
+  color: #2C221E;
+  font-family: Title, serif;
+  font-size: 1.5rem;
+}
+
+.helping-hands-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.helping-hand-card {
+  padding: 32px;
+  background: #FBF7EE;
+  border: 1px solid #D0C2A7;
+  border-top: 4px solid #7A3E29;
+  border-radius: 4px;
+  transition: transform 0.25s ease;
+}
+
+.helping-hand-card:hover {
+  transform: translateY(-4px);
+}
+
+@media (max-width: 850px) {
+  .awards-grid-three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .awards-grid,
+  .awards-grid-three,
+  .helping-hands-grid {
+    grid-template-columns: 1fr;
+  }
+  .award-featured img,
+  .award-card img {
+    height: 300px;
+  }
+  .award-card-wide img,
+  .award-img-wide {
+    height: 280px;
+  }
+}
+
+
+
+
+/* ==========================================================================
+   Closing Presentation Slide (end.png)
+   ========================================================================== */
+.closing-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1A1412;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.closing-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+}
+
+.closing-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+  /* Original high-quality image: no blur, filter, opacity, or overlay */
+}
+
+.closing-text-overlay {
+  position: absolute;
+  left: 5%;
+  bottom: 8%;
+  width: auto;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none;
+  background: rgba(18, 14, 12, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 16px 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(244, 240, 230, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+.closing-quote-primary {
+  font-family: 'Cormorant Garamond', Garamond, 'Georgia', serif;
+  font-size: clamp(28px, 3.8vw, 52px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: #F4F0E6; /* Warm ivory */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: block;
+}
+
+.closing-quote-secondary {
+  font-family: 'Cormorant Garamond', Garamond, 'Georgia', serif;
+  font-size: clamp(20px, 2.4vw, 32px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.25;
+  color: #E3D3B0; /* Muted gold */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .closing-text-overlay {
+    left: 6%;
+    bottom: 6%;
+    width: 55%;
+    max-width: 340px;
+  }
+  .closing-quote-primary {
+    font-size: clamp(22px, 5.5vw, 32px);
+  }
+  .closing-quote-secondary {
+    font-size: clamp(16px, 4vw, 22px);
+  }
+}
+
+@media (max-width: 480px) {
+  .closing-text-overlay {
+    left: 5%;
+    bottom: 5%;
+    width: 70%;
+    max-width: 280px;
+  }
+  .closing-quote-primary {
+    font-size: 20px;
+  }
+  .closing-quote-secondary {
+    font-size: 15px;
+  }
+}

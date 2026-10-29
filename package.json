@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predev": "node scripts/generate-photo-manifest.js",
     "build": "vite build",
+    "prebuild": "node scripts/generate-photo-manifest.js",
+    "generate:photos": "node scripts/generate-photo-manifest.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
