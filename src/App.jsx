@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-// All public photos for the global filmstrip (exclude non-image files)
+// All public photos for the global filmstrip
 const ALL_PHOTOS = [
   { url: '/bg.JPG', caption: 'Camp at Wayanad' },
   { url: '/d1.1.JPG', caption: 'Anchoring' },
@@ -33,6 +33,61 @@ const ALL_PHOTOS = [
   { url: '/DSC09874.JPG', caption: '' },
   { url: '/DSC09875.JPG', caption: '' },
   { url: '/DSC09876.JPG', caption: '' },
+];
+
+// FACULTY & ADVISORY DATA STRUCTURES
+const CAMP_DIRECTORS = [
+  { name: 'Dr. Sister Suni Rose I. P.', title: 'Camp Director' },
+  { name: 'Dr. Rajeev S. P.', title: 'Camp Director' }
+];
+
+const CAMP_COORDINATORS = [
+  'Roy Anand K. A.',
+  'Diljith K. Benny',
+  'Priyanka E. Thampi',
+  'Dr. Lijo K. J.',
+  'Lakshmi Jayaraj',
+  'Keerthana Mohandas'
+];
+
+const CAMP_ADVISERS = [
+  { name: 'Dr. Kiran Thampi', designation: 'Head, Social Work Department' },
+  { name: 'Dr. Bindu M. Varghese', designation: 'Dean, Computer Science Department' },
+  { name: 'Dais George', designation: 'Head, Statistics Department' },
+  { name: 'Sunu Mary Abraham', designation: 'Head, Computer Science Department' },
+  { name: 'Dr. Rashmi P.', designation: 'Head, Psychology Department' }
+];
+
+// STUDENT OFFICE BEARERS DATA
+const STUDENT_OFFICE_BEARERS = [
+  'Kevin J. Kulambukadan',
+  'Parvathy Krishna',
+  'Ananth Tees Joy',
+  'Sangeeth M.',
+  'Anna S. Biju',
+  'Laya V. Unni',
+  'Sara Shaiju'
+];
+
+// GROUP LEADERS DATA
+const GROUP_LEADERS = [
+  { group: 'Group 1', leader: 'Abhishek Vincent', deputy: 'Annamol Joseph' },
+  { group: 'Group 2', leader: 'Anna Maria Varghese', deputy: 'Christine Binu' },
+  { group: 'Group 3', leader: 'Ashwin P.', deputy: 'Ananya' },
+  { group: 'Group 4', leader: 'Sayana Das', deputy: 'Ajo K. Biju' },
+  { group: 'Group 5', leader: 'Maria Biju', deputy: 'James' },
+  { group: 'Group 6', leader: 'Athulya Madhav', deputy: 'Annsteve' }
+];
+
+// COMMITTEE CONVENERS DATA
+const COMMITTEE_CONVENERS = [
+  { code: 'COM 01', committee: 'Publicity, Documentation and Camp Paper', convener: 'Athul John Joseph', coConvener: 'Meghana Annup' },
+  { code: 'COM 02', committee: 'Food and Waste Management', convener: 'Nidhi Grace', coConvener: 'Jiss Abraham' },
+  { code: 'COM 03', committee: 'Programme and Cultural', convener: 'Ahmed Shameer', coConvener: 'Aysha Sana V.' },
+  { code: 'COM 04', committee: 'Discipline', convener: 'Abhijith Biju', coConvener: 'Devsaro' },
+  { code: 'COM 05', committee: 'Travel and Accommodation', convener: 'Pragathi Raj', coConvener: '' },
+  { code: 'COM 06', committee: 'Tools and Work', convener: 'Teshaswini Nair', coConvener: 'Abhinav B. T.' },
+  { code: 'COM 07', committee: 'Finance, First Aid and Medical', convener: 'Aleena K. Ani', coConvener: 'Nikhil Paul' }
 ];
 
 const GROUP_DATA = [
@@ -644,6 +699,17 @@ const CAMP_VIDEOS = [
   }
 ];
 
+const FINAL_CAMP_VIDEO = {
+  id: 'final-camp-film',
+  title: 'Sahayathra 2026 — Official Camp Aftermovie',
+  category: 'Full Camp Representation Film',
+  duration: '08:45',
+  date: 'October 18, 2026',
+  thumbnail: '/bg.JPG',
+  caption: 'A comprehensive cinematic chronicle capturing the spirit, hard work, friendships, and unforgettable memories of our 5 days in Wayanad.',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+};
+
 export default function App() {
   const [offset, setOffset] = useState(0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
@@ -651,38 +717,47 @@ export default function App() {
   const [activeReportIndex, setActiveReportIndex] = useState(0);
   const [activeReportDayIndex, setActiveReportDayIndex] = useState(0);
   const [committeeViewMode, setCommitteeViewMode] = useState('single'); // 'single' or 'all'
-  const [isVideoSectionOpen, setIsVideoSectionOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
   const [isAutoPlayActive, setIsAutoPlayActive] = useState(false);
   
-  // fade key: bumped every time group or day changes to retrigger CSS animation
+  // fade keys for content transitions
   const [groupFadeKey, setGroupFadeKey] = useState(0);
   const [dayFadeKey, setDayFadeKey] = useState(0);
 
   const heroRef = useRef(null);
+  const facultyRef = useRef(null);
+  const leadersRef = useRef(null);
   const journalRef = useRef(null);
   const reportsRef = useRef(null);
   const videoRef = useRef(null);
+  const finalVideoRef = useRef(null);
+  const thanksRef = useRef(null);
   const epilogueRef = useRef(null);
 
-  const sectionRefs = [heroRef, journalRef, reportsRef, videoRef, epilogueRef];
+  const sectionRefs = [heroRef, facultyRef, leadersRef, journalRef, reportsRef, videoRef, finalVideoRef, thanksRef, epilogueRef];
 
   const activeGroup = GROUP_DATA[activeGroupIndex];
   const activeDay = activeGroup.days[activeDayIndex] || activeGroup.days[0];
   const activeReport = COMMITTEE_REPORTS[activeReportIndex];
   const activeReportDay = activeReport.days[activeReportDayIndex] || activeReport.days[0];
 
-  // Parallax scroll listener
+  // Smooth Parallax listener with requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setOffset(window.pageYOffset);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setOffset(window.pageYOffset);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Switch group with fade
   const switchGroup = (idx) => {
     setActiveGroupIndex(idx);
     setActiveDayIndex(0);
@@ -690,7 +765,6 @@ export default function App() {
     setDayFadeKey((k) => k + 1);
   };
 
-  // Switch day within active group with fade
   const switchDay = (idx) => {
     setActiveDayIndex(idx);
     setDayFadeKey((k) => k + 1);
@@ -707,25 +781,23 @@ export default function App() {
           setDayFadeKey((k) => k + 1);
           return prevDayIdx + 1;
         } else {
-          // Reached last day of active group -> advance to next group
           setActiveGroupIndex((prevGroupIdx) => {
             const nextGroupIdx = (prevGroupIdx + 1) % GROUP_DATA.length;
             setGroupFadeKey((k) => k + 1);
             return nextGroupIdx;
           });
           setDayFadeKey((k) => k + 1);
-          return 0; // Reset to Day 1
+          return 0;
         }
       });
-    }, 4000); // Advances every 4 seconds
+    }, 4000);
 
     return () => clearInterval(timer);
   }, [isAutoPlayActive, activeGroupIndex]);
 
-  // Keyboard Navigation: Up/Down Section Presentation Scroll + Lightbox controls
+  // Keyboard Navigation: Smooth Up/Down Section Presentation Scroll + Modal controls
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Lightbox / Video Modal Escape
       if (e.key === 'Escape') {
         if (selectedVideo !== null) {
           setSelectedVideo(null);
@@ -737,7 +809,6 @@ export default function App() {
         }
       }
 
-      // Lightbox photo navigation
       if (selectedPhotoIndex !== null) {
         if (e.key === 'ArrowLeft') {
           setSelectedPhotoIndex((prev) => (prev > 0 ? prev - 1 : ALL_PHOTOS.length - 1));
@@ -747,7 +818,6 @@ export default function App() {
         return;
       }
 
-      // Presentation Mode: Up / Down arrow keys scroll smoothly between page sections
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
         const currentScroll = window.pageYOffset;
@@ -795,23 +865,24 @@ export default function App() {
           backgroundImage: `url('/bg.JPG')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          transform: `translateY(${offset * 0.35}px)`
+          transform: `translate3d(0, ${offset * 0.35}px, 0)`,
+          willChange: 'transform',
+          transition: 'transform 0.1s linear'
         }} />
 
-        <div className="anim-fade-in" style={{ position: 'relative', zIndex: 10, display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '11px', color: '#E2D4BA', borderBottom: '1px solid rgba(226, 212, 186, 0.2)', paddingBottom: '12px' }}>
+        <div style={{ position: 'relative', zIndex: 10, display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '11px', color: '#E2D4BA', borderBottom: '1px solid rgba(226, 212, 186, 0.2)', paddingBottom: '12px' }}>
           <span style={{ letterSpacing: '1px' }}>✦ FIELD JOURNAL</span>
           <span style={{ letterSpacing: '1px' }}>SAHAYATHRA 2026</span>
         </div>
 
         <div 
-          className="anim-fade-in-up" 
           style={{ 
             position: 'relative', 
             zIndex: 10, 
             maxWidth: '650px', 
             margin: 'auto', 
             textAlign: 'center',
-            animation: 'fadeInBlur 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           <span style={{ fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', color: '#E2D4BA', display: 'block', marginBottom: '15px' }}>
@@ -823,24 +894,277 @@ export default function App() {
           <p style={{ fontSize: '0.95rem', color: '#E2D4BA', fontWeight: 300, fontFamily: 'sans-serif', lineHeight: 1.6 }}>
             A record of cold morning dew, thick mountain fog, and campfire smoke.
           </p>
-          <style>{`
-            @keyframes fadeInBlur {
-              0% {
-                opacity: 0;
-                filter: blur(14px);
-                transform: translateY(20px);
-              }
-              100% {
-                opacity: 1;
-                filter: blur(0px);
-                transform: translateY(0);
-              }
-            }
-          `}</style>
         </div>
+
         <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: '#C5B496', fontFamily: 'monospace', fontSize: '9px', letterSpacing: '2px' }}>
           <p style={{ margin: 0 }}>PRESS ↓ OR SCROLL TO OPEN JOURNAL</p>
-          <span className="anim-bounce" style={{ display: 'inline-block', marginTop: '6px', fontSize: '13px' }}>↓</span>
+          <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '13px' }}>↓</span>
+        </div>
+      </section>
+
+
+      {/* SECTION 2: FACULTY, COORDINATORS & ADVISERS */}
+      <section ref={facultyRef} style={{
+        backgroundColor: '#FBF7EE',
+        color: '#2C221E',
+        padding: '80px 60px',
+        borderTop: '1px solid #E0D4BE'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '36px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Section 02 // Faculty & Advisory Leadership
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Camp Mentors & Directors
+            </h2>
+          </div>
+
+          {/* 2A. CAMP DIRECTORS */}
+          <div style={{ marginBottom: '40px' }}>
+            <span style={{ backgroundColor: '#7A3E29', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold', letterSpacing: '1px', display: 'inline-block', marginBottom: '14px' }}>
+              CAMP DIRECTORS
+            </span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+              {CAMP_DIRECTORS.map((dir, idx) => (
+                <div key={idx} style={{
+                  backgroundColor: '#FAF5E8',
+                  border: '1px solid #7A3E29',
+                  borderRadius: '3px',
+                  padding: '20px 24px',
+                  boxShadow: '0 3px 8px rgba(122,62,41,0.06)'
+                }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#7A3E29', letterSpacing: '1px', display: 'block', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    {dir.title}
+                  </span>
+                  <h3 style={{ fontFamily: 'Title', fontSize: '1.25rem', margin: 0, color: '#2C221E', fontWeight: 'bold' }}>
+                    {dir.name}
+                  </h3>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 2B. CAMP COORDINATORS */}
+          <div style={{ marginBottom: '40px' }}>
+            <span style={{ backgroundColor: '#2C221E', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold', letterSpacing: '1px', display: 'inline-block', marginBottom: '14px' }}>
+              CAMP COORDINATORS
+            </span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+              {CAMP_COORDINATORS.map((coord, idx) => (
+                <div key={idx} style={{
+                  backgroundColor: '#FAF5E8',
+                  border: '1px solid #D0C2A7',
+                  borderRadius: '3px',
+                  padding: '14px 18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#7A3E29', flexShrink: 0 }} />
+                  <span style={{ fontFamily: 'sans-serif', fontSize: '0.92rem', fontWeight: 600, color: '#2C221E' }}>
+                    {coord}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 2C. CAMP ADVISERS */}
+          <div>
+            <span style={{ backgroundColor: '#2C221E', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold', letterSpacing: '1px', display: 'inline-block', marginBottom: '14px' }}>
+              CAMP ADVISERS
+            </span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+              {CAMP_ADVISERS.map((adv, idx) => (
+                <div key={idx} style={{
+                  backgroundColor: '#FAF5E8',
+                  border: '1px solid #D0C2A7',
+                  borderRadius: '3px',
+                  padding: '18px 20px',
+                  transition: 'border-color 0.2s ease'
+                }}>
+                  <h4 style={{ fontFamily: 'Title', fontSize: '1.1rem', margin: '0 0 4px 0', color: '#2C221E', fontWeight: 'bold' }}>
+                    {adv.name}
+                  </h4>
+                  <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', display: 'block', fontWeight: '500' }}>
+                    {adv.designation}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* SECTION 3: STUDENT OFFICE BEARERS, GROUP LEADERS & COMMITTEE LEADERS */}
+      <section ref={leadersRef} style={{
+        backgroundColor: '#F4ECD8',
+        color: '#2C221E',
+        padding: '80px 60px',
+        borderTop: '1px solid #D0C2A7'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          
+          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '36px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Section 03 // Student Leadership & Governance
+            </span>
+            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
+              Office Bearers, Group & Committee Leaders
+            </h2>
+          </div>
+
+          {/* 3A. STUDENT OFFICE BEARERS */}
+          <div style={{ marginBottom: '45px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <span style={{ backgroundColor: '#7A3E29', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold' }}>
+                EXECUTIVE
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.35rem', margin: 0, color: '#2C221E' }}>
+                Student Office Bearers
+              </h3>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '14px'
+            }}>
+              {STUDENT_OFFICE_BEARERS.map((bearer, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    backgroundColor: '#FAF5E8',
+                    border: '1px solid #D0C2A7',
+                    borderRadius: '3px',
+                    padding: '14px 18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                >
+                  <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', fontWeight: 'bold' }}>
+                    0{idx + 1}.
+                  </span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: '0.92rem', fontWeight: 600, color: '#2C221E' }}>
+                    {bearer}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 3B. GROUP LEADERS */}
+          <div style={{ marginBottom: '45px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <span style={{ backgroundColor: '#2C221E', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold' }}>
+                GROUPS 1–6
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.35rem', margin: 0, color: '#2C221E' }}>
+                Group Leaders
+              </h3>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '16px'
+            }}>
+              {GROUP_LEADERS.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    backgroundColor: '#FAF5E8',
+                    border: '1px solid #D0C2A7',
+                    borderRadius: '3px',
+                    padding: '18px 20px',
+                    transition: 'border-color 0.2s ease',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#7A3E29', fontWeight: 'bold', letterSpacing: '1px' }}>
+                      {item.group}
+                    </span>
+                    <span style={{ backgroundColor: 'rgba(122, 62, 41, 0.1)', color: '#7A3E29', fontFamily: 'monospace', fontSize: '9px', padding: '2px 6px', borderRadius: '2px' }}>
+                      LEADERS
+                    </span>
+                  </div>
+
+                  <div>
+                    <p style={{ fontFamily: 'sans-serif', fontSize: '0.92rem', margin: '0 0 4px 0', color: '#2C221E', fontWeight: 600 }}>
+                      {item.leader}
+                    </p>
+                    {item.deputy && (
+                      <p style={{ fontFamily: 'sans-serif', fontSize: '0.92rem', margin: 0, color: '#52443D', fontWeight: 600 }}>
+                        {item.deputy}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 3C. COMMITTEE CONVENERS */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <span style={{ backgroundColor: '#2C221E', color: '#FBF7EE', fontFamily: 'monospace', fontSize: '9px', padding: '3px 8px', borderRadius: '2px', fontWeight: 'bold' }}>
+                COMMITTEES
+              </span>
+              <h3 style={{ fontFamily: 'Title', fontSize: '1.35rem', margin: 0, color: '#2C221E' }}>
+                Committee Leaders
+              </h3>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '16px'
+            }}>
+              {COMMITTEE_CONVENERS.map((comm, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    backgroundColor: '#FAF5E8',
+                    border: '1px solid #D0C2A7',
+                    borderRadius: '3px',
+                    padding: '20px',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '10px', backgroundColor: '#7A3E29', color: '#FBF7EE', padding: '2px 6px', borderRadius: '2px', fontWeight: 'bold' }}>
+                      {comm.code}
+                    </span>
+                    <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#8C7A70' }}>
+                      LEADS
+                    </span>
+                  </div>
+
+                  <h4 style={{ fontFamily: 'Title', fontSize: '1.1rem', margin: '0 0 10px 0', color: '#2C221E', fontWeight: 'bold' }}>
+                    {comm.committee}
+                  </h4>
+
+                  <div style={{ fontFamily: 'sans-serif', fontSize: '0.9rem', color: '#2C221E' }}>
+                    <p style={{ margin: '0 0 3px 0', fontWeight: 600 }}>
+                      {comm.convener}
+                    </p>
+                    {comm.coConvener && (
+                      <p style={{ margin: 0, fontWeight: 600, color: '#52443D' }}>
+                        {comm.coConvener}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -881,7 +1205,7 @@ export default function App() {
                   color: activeGroupIndex === idx ? '#7A3E29' : '#8C7A70',
                   fontWeight: activeGroupIndex === idx ? 'bold' : 'normal',
                   borderBottom: activeGroupIndex === idx ? '2px solid #7A3E29' : '2px solid transparent',
-                  transition: 'all 0.2s ease'
+                  transition: 'color 0.2s ease, border-color 0.2s ease'
                 }}
               >
                 {group.name}
@@ -889,7 +1213,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* AUTO-PLAY CYCLE TOGGLE SWITCH */}
           <button
             onClick={() => setIsAutoPlayActive((prev) => !prev)}
             style={{
@@ -913,13 +1236,11 @@ export default function App() {
           </button>
         </div>
 
-        {/* COMPACT GROUP LOG CONTAINER (REDUCED PADDING TO FIT WITH PHOTO REEL) */}
+        {/* COMPACT GROUP LOG CONTAINER */}
         <div
           key={groupFadeKey}
-          className="anim-fade-in"
-          style={{ padding: '24px 40px 10px 40px', maxWidth: '1100px', margin: '0 auto', flex: 1 }}
+          style={{ padding: '24px 40px 10px 40px', maxWidth: '1100px', margin: '0 auto', flex: 1, transition: 'opacity 0.3s ease' }}
         >
-          {/* GROUP HEADING */}
           <div style={{ marginBottom: '16px' }}>
             <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
               Section 04 // Field Journal — {activeGroup.name}
@@ -957,18 +1278,17 @@ export default function App() {
             })}
           </div>
 
-          {/* ACTIVE DAY CONTENT — COMPACT LAYOUT */}
+          {/* ACTIVE DAY CONTENT */}
           <div
             key={dayFadeKey}
-            className="anim-fade-in-up"
             style={{
               display: 'grid',
               gridTemplateColumns: 'minmax(140px, 170px) 1fr',
               gap: '30px',
-              alignItems: 'flex-start'
+              alignItems: 'flex-start',
+              transition: 'opacity 0.3s ease'
             }}
           >
-            {/* LEFT: DAY NUMBER */}
             <div>
               <span style={{
                 fontFamily: 'Title',
@@ -987,7 +1307,6 @@ export default function App() {
               </span>
             </div>
 
-            {/* RIGHT: TITLE + NOTE */}
             <div>
               <h3 style={{
                 fontFamily: 'Title',
@@ -1010,7 +1329,6 @@ export default function App() {
                 {activeDay.note}
               </p>
 
-              {/* DAY STEPPER */}
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
                   disabled={activeDayIndex === 0}
@@ -1056,31 +1374,30 @@ export default function App() {
           </div>
         </div>
 
-        {/* GLOBAL PHOTO FILMSTRIP — POSITIONED DIRECTLY WITH REDUCED TOP MARGIN */}
+        {/* GLOBAL PHOTO FILMSTRIP */}
         <div style={{ overflow: 'hidden', marginTop: '16px', borderTop: '1px solid #E0D4BE', borderBottom: '1px solid #E0D4BE', backgroundColor: '#EBE2CC', position: 'relative' }}>
           <div style={{ position: 'absolute', top: '8px', left: '20px', zIndex: 5, fontFamily: 'monospace', fontSize: '9px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', backgroundColor: '#EBE2CC', padding: '2px 8px' }}>
             ✦ PHOTO ARCHIVE
           </div>
 
           <div
-            className="anim-filmstrip"
-            style={{ display: 'flex', gap: '10px', padding: '30px 0 12px 0', width: 'max-content' }}
+            style={{ display: 'flex', gap: '10px', padding: '30px 0 12px 0', width: 'max-content', overflowX: 'auto' }}
           >
-            {[...ALL_PHOTOS, ...ALL_PHOTOS].map((photo, idx) => (
+            {ALL_PHOTOS.map((photo, idx) => (
               <div
                 key={idx}
-                onClick={() => setSelectedPhotoIndex(idx % ALL_PHOTOS.length)}
+                onClick={() => setSelectedPhotoIndex(idx)}
                 style={{
                   flexShrink: 0,
                   cursor: 'pointer',
                   overflow: 'hidden',
                   borderRadius: '2px',
                   boxShadow: '0 4px 10px rgba(44,34,30,0.12)',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.04) translateY(-3px)';
-                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(44,34,30,0.22)';
+                  e.currentTarget.style.transform = 'scale(1.03) translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 18px rgba(44,34,30,0.2)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1) translateY(0)';
@@ -1511,13 +1828,12 @@ export default function App() {
           <div style={{
             borderTop: '1px solid #2C221E',
             paddingTop: '20px',
-            paddingBottom: isVideoSectionOpen ? '28px' : '0',
+            paddingBottom: '24px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '16px',
-            transition: 'padding 0.3s ease'
+            gap: '16px'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               <span style={{
@@ -1540,242 +1856,433 @@ export default function App() {
                 Expedition Videos & Cultural Recordings
               </span>
             </div>
-
-            <button
-              onClick={() => setIsVideoSectionOpen((prev) => !prev)}
-              aria-expanded={isVideoSectionOpen}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontFamily: 'monospace',
-                fontSize: '11px',
-                letterSpacing: '1.5px',
-                color: isVideoSectionOpen ? '#7A3E29' : '#2C221E',
-                fontWeight: 'bold',
-                padding: '6px 10px',
-                borderRadius: '2px',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#7A3E29';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = isVideoSectionOpen ? '#7A3E29' : '#2C221E';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              <span>{isVideoSectionOpen ? 'HIDE VIDEOS' : 'SHOW VIDEOS (04)'}</span>
-              <span style={{
-                display: 'inline-block',
-                transform: isVideoSectionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                fontSize: '11px'
-              }}>
-                ▼
-              </span>
-            </button>
           </div>
 
-          {isVideoSectionOpen && (
-            <div className="anim-fade-in-up" style={{ marginTop: '10px' }}>
-              
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '24px',
-                marginBottom: '35px'
-              }}>
-                {CAMP_VIDEOS.map((video) => (
-                  <div
-                    key={video.id}
-                    onClick={() => setSelectedVideo(video)}
-                    style={{
-                      backgroundColor: '#FAF5E8',
-                      border: '1px solid #D0C2A7',
-                      borderRadius: '3px',
-                      overflow: 'hidden',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                      boxShadow: '0 4px 12px rgba(44,34,30,0.04)',
-                      display: 'flex',
-                      flexDirection: 'column'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#7A3E29';
-                      e.currentTarget.style.transform = 'translateY(-5px)';
-                      e.currentTarget.style.boxShadow = '0 12px 28px rgba(44,34,30,0.12)';
-                      const img = e.currentTarget.querySelector('img');
-                      if (img) img.style.transform = 'scale(1.06)';
-                      const playIcon = e.currentTarget.querySelector('.play-btn-pulse');
-                      if (playIcon) playIcon.style.transform = 'translate(-50%, -50%) scale(1.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#D0C2A7';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(44,34,30,0.04)';
-                      const img = e.currentTarget.querySelector('img');
-                      if (img) img.style.transform = 'scale(1)';
-                      const playIcon = e.currentTarget.querySelector('.play-btn-pulse');
-                      if (playIcon) playIcon.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }}
-                  >
-                    <div style={{ position: 'relative', width: '100%', height: '170px', overflow: 'hidden', backgroundColor: '#1A1412' }}>
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          opacity: 0.88,
-                          transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-                        }}
-                      />
-                      
-                      <span style={{
+          <div style={{ marginTop: '10px' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '24px',
+              marginBottom: '20px'
+            }}>
+              {CAMP_VIDEOS.map((video) => (
+                <div
+                  key={video.id}
+                  onClick={() => setSelectedVideo(video)}
+                  style={{
+                    backgroundColor: '#FAF5E8',
+                    border: '1px solid #D0C2A7',
+                    borderRadius: '3px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease',
+                    boxShadow: '0 4px 12px rgba(44,34,30,0.04)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#7A3E29';
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(44,34,30,0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#D0C2A7';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(44,34,30,0.04)';
+                  }}
+                >
+                  <div style={{ position: 'relative', width: '100%', height: '170px', overflow: 'hidden', backgroundColor: '#1A1412' }}>
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        opacity: 0.88
+                      }}
+                    />
+                    
+                    <span style={{
+                      position: 'absolute',
+                      bottom: '10px',
+                      right: '10px',
+                      backgroundColor: 'rgba(20, 15, 13, 0.85)',
+                      color: '#FBF7EE',
+                      fontFamily: 'monospace',
+                      fontSize: '9px',
+                      padding: '3px 6px',
+                      borderRadius: '2px'
+                    }}>
+                      {video.duration}
+                    </span>
+
+                    <span style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      backgroundColor: '#7A3E29',
+                      color: '#FBF7EE',
+                      fontFamily: 'monospace',
+                      fontSize: '9px',
+                      padding: '2px 7px',
+                      borderRadius: '2px',
+                      fontWeight: 'bold'
+                    }}>
+                      DAY 0{video.day}
+                    </span>
+
+                    <div
+                      style={{
                         position: 'absolute',
-                        bottom: '10px',
-                        right: '10px',
-                        backgroundColor: 'rgba(20, 15, 13, 0.85)',
-                        color: '#FBF7EE',
-                        fontFamily: 'monospace',
-                        fontSize: '9px',
-                        padding: '3px 6px',
-                        borderRadius: '2px',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {video.duration}
-                      </span>
-
-                      <span style={{
-                        position: 'absolute',
-                        top: '10px',
-                        left: '10px',
-                        backgroundColor: '#7A3E29',
-                        color: '#FBF7EE',
-                        fontFamily: 'monospace',
-                        fontSize: '9px',
-                        padding: '2px 7px',
-                        borderRadius: '2px',
-                        fontWeight: 'bold'
-                      }}>
-                        DAY 0{video.day}
-                      </span>
-
-                      <div
-                        className="play-btn-pulse anim-pulse-ring"
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          width: '44px',
-                          height: '44px',
-                          borderRadius: '50%',
-                          backgroundColor: 'rgba(244, 236, 216, 0.92)',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                          transition: 'transform 0.3s ease'
-                        }}
-                      >
-                        <div style={{
-                          width: 0,
-                          height: 0,
-                          borderTop: '7px solid transparent',
-                          borderBottom: '7px solid transparent',
-                          borderLeft: '11px solid #7A3E29',
-                          marginLeft: '3px'
-                        }} />
-                      </div>
-                    </div>
-
-                    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                      <div>
-                        <span style={{
-                          fontFamily: 'monospace',
-                          fontSize: '9px',
-                          color: '#8C7A70',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px',
-                          display: 'block',
-                          marginBottom: '4px'
-                        }}>
-                          {video.category}
-                        </span>
-                        <h4 style={{
-                          fontFamily: 'Title',
-                          fontSize: '1.05rem',
-                          margin: '0 0 8px 0',
-                          color: '#2C221E',
-                          lineHeight: '1.3'
-                        }}>
-                          {video.title}
-                        </h4>
-                        <p style={{
-                          fontFamily: 'sans-serif',
-                          fontSize: '0.8rem',
-                          color: '#52443D',
-                          lineHeight: '1.5',
-                          margin: 0
-                        }}>
-                          {video.description}
-                        </p>
-                      </div>
-
-                      <div style={{
-                        marginTop: '14px',
-                        paddingTop: '10px',
-                        borderTop: '1px solid rgba(208, 194, 167, 0.4)',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(244, 236, 216, 0.92)',
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: 'center',
                         alignItems: 'center',
-                        fontFamily: 'monospace',
-                        fontSize: '9px'
-                      }}>
-                        <span style={{ color: '#8C7A70' }}>{video.date}</span>
-                        <span style={{ color: '#7A3E29', fontWeight: 'bold' }}>WATCH FOOTAGE ▶</span>
-                      </div>
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+                      }}
+                    >
+                      <div style={{
+                        width: 0,
+                        height: 0,
+                        borderTop: '7px solid transparent',
+                        borderBottom: '7px solid transparent',
+                        borderLeft: '11px solid #7A3E29',
+                        marginLeft: '3px'
+                      }} />
                     </div>
                   </div>
-                ))}
+
+                  <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                    <div>
+                      <span style={{
+                        fontFamily: 'monospace',
+                        fontSize: '9px',
+                        color: '#8C7A70',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        display: 'block',
+                        marginBottom: '4px'
+                      }}>
+                        {video.category}
+                      </span>
+                      <h4 style={{
+                        fontFamily: 'Title',
+                        fontSize: '1.05rem',
+                        margin: '0 0 8px 0',
+                        color: '#2C221E',
+                        lineHeight: '1.3'
+                      }}>
+                        {video.title}
+                      </h4>
+                      <p style={{
+                        fontFamily: 'sans-serif',
+                        fontSize: '0.8rem',
+                        color: '#52443D',
+                        lineHeight: '1.5',
+                        margin: 0
+                      }}>
+                        {video.caption}
+                      </p>
+                    </div>
+
+                    <div style={{
+                      marginTop: '14px',
+                      paddingTop: '10px',
+                      borderTop: '1px solid rgba(208, 194, 167, 0.4)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontFamily: 'monospace',
+                      fontSize: '9px'
+                    }}>
+                      <span style={{ color: '#8C7A70' }}>{video.date}</span>
+                      <span style={{ color: '#7A3E29', fontWeight: 'bold' }}>WATCH FOOTAGE ▶</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* SECTION 5.C: FINAL CAMP REPRESENTATION FILM */}
+      <section ref={finalVideoRef} style={{
+        backgroundColor: '#EBE2CC',
+        color: '#2C221E',
+        padding: '50px 60px 60px 60px',
+        borderTop: '1px solid #D0C2A7'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            borderBottom: '1px solid #2C221E',
+            paddingBottom: '16px',
+            marginBottom: '32px'
+          }}>
+            <span style={{
+              fontFamily: 'monospace',
+              fontSize: '11px',
+              color: '#7A3E29',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              fontWeight: 'bold'
+            }}>
+              ✦ SECTION 05.C // OFFICIAL CAMP FILM
+            </span>
+            <span style={{ width: '40px', height: '1px', backgroundColor: '#C5B496' }}></span>
+            <span style={{
+              fontFamily: 'Title',
+              fontSize: '1.25rem',
+              color: '#2C221E',
+              fontStyle: 'italic'
+            }}>
+              Sahayathra 2026 Representation Video
+            </span>
+          </div>
+
+          <div
+            onClick={() => setSelectedVideo(FINAL_CAMP_VIDEO)}
+            style={{
+              backgroundColor: '#FAF5E8',
+              border: '2px solid #7A3E29',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              boxShadow: '0 8px 24px rgba(44,34,30,0.08)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '0',
+              transition: 'all 0.25s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 16px 36px rgba(44,34,30,0.16)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(44,34,30,0.08)';
+            }}
+          >
+            <div style={{ position: 'relative', minHeight: '260px', backgroundColor: '#1A1412' }}>
+              <img
+                src={FINAL_CAMP_VIDEO.thumbnail}
+                alt={FINAL_CAMP_VIDEO.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  opacity: 0.85,
+                  display: 'block'
+                }}
+              />
+              
+              <span style={{
+                position: 'absolute',
+                top: '16px',
+                left: '16px',
+                backgroundColor: '#7A3E29',
+                color: '#FBF7EE',
+                fontFamily: 'monospace',
+                fontSize: '10px',
+                padding: '4px 10px',
+                borderRadius: '2px',
+                fontWeight: 'bold',
+                letterSpacing: '1px'
+              }}>
+                FEATURED DOCUMENTARY
+              </span>
+
+              <span style={{
+                position: 'absolute',
+                bottom: '16px',
+                right: '16px',
+                backgroundColor: 'rgba(20, 15, 13, 0.9)',
+                color: '#FBF7EE',
+                fontFamily: 'monospace',
+                fontSize: '10px',
+                padding: '4px 8px',
+                borderRadius: '2px'
+              }}>
+                {FINAL_CAMP_VIDEO.duration}
+              </span>
+
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(244, 236, 216, 0.95)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.4)'
+                }}
+              >
+                <div style={{
+                  width: 0,
+                  height: 0,
+                  borderTop: '9px solid transparent',
+                  borderBottom: '9px solid transparent',
+                  borderLeft: '14px solid #7A3E29',
+                  marginLeft: '4px'
+                }} />
+              </div>
+            </div>
+
+            <div style={{ padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: '10px',
+                  color: '#7A3E29',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1.5px',
+                  fontWeight: 'bold',
+                  display: 'block',
+                  marginBottom: '8px'
+                }}>
+                  {FINAL_CAMP_VIDEO.category}
+                </span>
+
+                <h3 style={{
+                  fontFamily: 'Title',
+                  fontSize: '1.75rem',
+                  margin: '0 0 12px 0',
+                  color: '#2C221E',
+                  lineHeight: '1.2'
+                }}>
+                  {FINAL_CAMP_VIDEO.title}
+                </h3>
+
+                <p style={{
+                  fontFamily: 'sans-serif',
+                  fontSize: '0.92rem',
+                  color: '#42352F',
+                  lineHeight: '1.65',
+                  margin: 0
+                }}>
+                  {FINAL_CAMP_VIDEO.caption}
+                </p>
               </div>
 
               <div style={{
-                textAlign: 'center',
-                borderTop: '1px dashed #D0C2A7',
-                paddingTop: '16px'
+                marginTop: '24px',
+                paddingTop: '16px',
+                borderTop: '1px solid rgba(122, 62, 41, 0.2)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                fontFamily: 'monospace',
+                fontSize: '10px'
               }}>
-                <button
-                  onClick={() => setIsVideoSectionOpen(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#7A3E29',
-                    fontFamily: 'monospace',
-                    fontSize: '10px',
-                    letterSpacing: '1px',
-                    cursor: 'pointer',
-                    padding: '6px 14px',
-                    borderRadius: '2px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#2C221E'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = '#7A3E29'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                >
-                  ▲ HIDE VIDEO ARCHIVE
-                </button>
+                <span style={{ color: '#8C7A70' }}>RELEASED: {FINAL_CAMP_VIDEO.date}</span>
+                <span style={{
+                  backgroundColor: '#7A3E29',
+                  color: '#FBF7EE',
+                  padding: '6px 14px',
+                  borderRadius: '2px',
+                  fontWeight: 'bold',
+                  letterSpacing: '0.5px'
+                }}>
+                  PLAY FULL FILM ▶
+                </span>
               </div>
-
             </div>
-          )}
+          </div>
 
+        </div>
+      </section>
+
+      {/* SECTION 6: SPECIAL THANKS TO */}
+      <section ref={thanksRef} style={{
+        backgroundColor: '#EBE2CC',
+        color: '#2C221E',
+        padding: '120px 60px',
+        borderTop: '2px solid #7A3E29',
+        borderBottom: '2px solid #7A3E29',
+        position: 'relative',
+        overflow: 'hidden',
+        textAlign: 'center'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontFamily: 'Title',
+          fontSize: 'clamp(5rem, 15vw, 12rem)',
+          fontWeight: 'bold',
+          color: 'rgba(122, 62, 41, 0.04)',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          zIndex: 0
+        }}>
+          GRATITUDE
+        </div>
+
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontFamily: 'monospace',
+            fontSize: '11px',
+            color: '#7A3E29',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+            marginBottom: '20px',
+            fontWeight: 'bold'
+          }}>
+            <span>✦ ✦ ✦</span>
+            <span>ACKNOWLEDGEMENT</span>
+            <span>✦ ✦ ✦</span>
+          </div>
+
+          <h2 style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(3rem, 6vw, 5rem)',
+            fontWeight: 'bold',
+            lineHeight: '1.05',
+            color: '#2C221E',
+            margin: '0 0 24px 0',
+            letterSpacing: '-0.5px'
+          }}>
+            Special Thanks to <br></br>
+            Rajagiri College of Social Sciences
+          </h2>
+
+          <div style={{ width: '100px', height: '2px', backgroundColor: '#7A3E29', margin: '0 auto 32px auto' }} />
+
+          <p style={{
+            fontFamily: 'Title',
+            fontSize: 'clamp(1.25rem, 2.8vw, 2rem)',
+            fontStyle: 'italic',
+            color: '#3D302A',
+            lineHeight: '1.6',
+            fontWeight: 400,
+            margin: '0 auto',
+            maxWidth: '820px'
+          }}>
+            "We express our sincere gratitude to our college management, faculty, and administration for their invaluable support, guidance, and backing in making Sahayathra 2026 a resounding success."
+          </p>
         </div>
       </section>
 
@@ -1867,7 +2374,6 @@ export default function App() {
       {/* INTERACTIVE PHOTO LIGHTBOX MODAL */}
       {selectedPhotoIndex !== null && ALL_PHOTOS[selectedPhotoIndex] && (
         <div 
-          className="anim-fade-in"
           style={{
             position: 'fixed',
             inset: 0,
@@ -1905,7 +2411,6 @@ export default function App() {
           <img
             src={ALL_PHOTOS[selectedPhotoIndex].url}
             alt={ALL_PHOTOS[selectedPhotoIndex].caption}
-            className="anim-scale-up"
             style={{
               maxWidth: '85vw',
               maxHeight: '70vh',
@@ -1936,8 +2441,8 @@ export default function App() {
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#C5B496'; e.currentTarget.style.color = '#2C221E'; e.currentTarget.style.transform = 'translateX(-3px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FBF7EE'; e.currentTarget.style.transform = 'translateX(0)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#C5B496'; e.currentTarget.style.color = '#2C221E'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FBF7EE'; }}
             >
               ← PREVIOUS
             </button>
@@ -1953,8 +2458,8 @@ export default function App() {
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#C5B496'; e.currentTarget.style.color = '#2C221E'; e.currentTarget.style.transform = 'translateX(3px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FBF7EE'; e.currentTarget.style.transform = 'translateX(0)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#C5B496'; e.currentTarget.style.color = '#2C221E'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FBF7EE'; }}
             >
               NEXT →
             </button>
@@ -1966,7 +2471,6 @@ export default function App() {
       {/* INTERACTIVE VIDEO PLAYER LIGHTBOX MODAL */}
       {selectedVideo && (
         <div 
-          className="anim-fade-in"
           onClick={() => setSelectedVideo(null)}
           style={{
             position: 'fixed',
@@ -2004,7 +2508,6 @@ export default function App() {
 
           <div
             onClick={(e) => e.stopPropagation()}
-            className="anim-scale-up"
             style={{
               maxWidth: '850px',
               width: '90vw',
