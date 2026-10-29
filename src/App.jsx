@@ -25,7 +25,7 @@ const CAMP_DIRECTORS = [
 ];
 
 const CAMP_COORDINATORS = [
-  'Roy Anand K. A.',
+  'Dev Anand K',
   'Diljith K. Benny',
   'Priyanka E. Thampi',
   'Dr. Lijo K. J.',
@@ -35,17 +35,17 @@ const CAMP_COORDINATORS = [
 
 const CAMP_ADVISERS = [
   { name: 'Dr. Kiran Thampi', designation: 'Head, Social Work Department' },
-  { name: 'Dr. Bindu M. Varghese', designation: 'Dean, Computer Science Department' },
-  { name: 'Dais George', designation: 'Head, Statistics Department' },
+  { name: 'Dr. Bindiya M. Varghese', designation: 'Dean, Computer Science Department' },
+  { name: 'Dr. Dais George', designation: 'Head, Statistics Department' },
   { name: 'Sunu Mary Abraham', designation: 'Head, Computer Science Department' },
   { name: 'Dr. Rashmi P.', designation: 'Head, Psychology Department' }
 ];
 
 // STUDENT OFFICE BEARERS DATA
 const STUDENT_OFFICE_BEARERS = [
-  'Kevin J. Kulambukadan',
+  'Kevin J',
   'Parvathy Krishna',
-  'Ananth Tees Joy',
+  'Annet Treesa Joy',
   'Sangeeth M.',
   'Anna S. Biju',
   'Laya V. Unni',
@@ -67,7 +67,7 @@ const COMMITTEE_CONVENERS = [
   { code: 'COM 01', committee: 'Publicity, Documentation and Camp Paper', convener: 'Athul John Joseph', coConvener: 'Meghana Annup' },
   { code: 'COM 02', committee: 'Food and Waste Management', convener: 'Nidhi Grace', coConvener: 'Jiss Abraham' },
   { code: 'COM 03', committee: 'Programme and Cultural', convener: 'Ahmed Shameer', coConvener: 'Aysha Sana V.' },
-  { code: 'COM 04', committee: 'Discipline', convener: 'Abhijith Biju', coConvener: 'Devsaro' },
+  { code: 'COM 04', committee: 'Discipline', convener: 'Abhijith Biju', coConvener: 'Don Savio' },
   { code: 'COM 05', committee: 'Travel and Accommodation', convener: 'Pragathi Raj', coConvener: 'Akhil' },
   { code: 'COM 06', committee: 'Tools and Work', convener: 'Thejaswini Nair', coConvener: 'Abhinav B. T.' },
   { code: 'COM 07', committee: 'Finance, First Aid and Medical', convener: 'Aleena K. Ani', coConvener: 'Nikhil Paul' }
@@ -796,15 +796,21 @@ const CAMP_VIDEOS = [
   }
 ];
 
+const getYouTubeEmbedUrl = (url) => {
+  if (!url) return null;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0` : null;
+};
+
 const FINAL_CAMP_VIDEO = {
   id: 'final-camp-film',
-  title: 'Sahayathra 2026 — Official Camp Aftermovie',
-  category: 'Full Camp Representation Film',
-  duration: '08:45',
-  date: 'October 18, 2026',
-  thumbnail: '/bg.JPG',
-  caption: 'A comprehensive cinematic chronicle capturing the spirit, hard work, friendships, and unforgettable memories of our 5 days in Wayanad.',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+  title: 'Sahayathra 2026 — A Journey Towards Change.',
+  category: 'Official Presentation Film',
+  duration: '06:16',
+  date: 'SAHAYATHRA 2026',
+  thumbnail: 'https://i.ytimg.com/vi/VcXdd2t63Dg/maxresdefault.jpg',
+  caption: 'Official camp representation film capturing the spirit, hard work, community service, and unforgettable memories of our journey in Wayanad.',
+  videoUrl: 'https://youtu.be/VcXdd2t63Dg'
 };
 
 const CAMP_TIMETABLE = [
@@ -3015,7 +3021,7 @@ export default function App() {
                 </div>
                 <div>
                   <p style={{ color: '#FBF7EE', margin: '0 0 6px 0', fontWeight: 'bold' }}>ARCHIVE METRICS</p>
-                  <p style={{ margin: 0, lineHeight: 1.5 }}>5 Days Recorded<br />6 Expedition Groups<br />31 High-Res Photographs</p>
+                  <p style={{ margin: 0, lineHeight: 1.5 }}>5 Days Recorded<br />6 Expedition Groups<br />{ALL_PHOTOS.length} High-Res Photographs</p>
                 </div>
               </div>
             </div>
@@ -3207,7 +3213,15 @@ export default function App() {
             }}
           >
             <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {videoError ? (
+              {getYouTubeEmbedUrl(selectedVideo.videoUrl) ? (
+                <iframe
+                  src={getYouTubeEmbedUrl(selectedVideo.videoUrl)}
+                  title={selectedVideo.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                />
+              ) : videoError ? (
                 <div style={{ padding: '24px 30px', textAlign: 'center', color: '#FBF7EE', maxWidth: '520px' }}>
                   <div style={{ color: '#E3D3B0', fontSize: '28px', marginBottom: '8px' }}>⚠</div>
                   <h4 style={{ fontFamily: 'Title, serif', fontSize: '1.3rem', margin: '0 0 8px 0', color: '#FAF5E8' }}>
@@ -3218,8 +3232,8 @@ export default function App() {
                   </p>
                   <div style={{ backgroundColor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(226, 212, 186, 0.2)', padding: '12px 16px', borderRadius: '4px', fontSize: '0.8rem', textAlign: 'left', color: '#E2D4BA', fontFamily: 'monospace' }}>
                     ✦ <strong>To play your camp footage:</strong><br />
-                    1. Save your MP4 video into <code>public/</code> or <code>public/videos/</code><br />
-                    2. Set <code>videoUrl: '/your-video.mp4'</code> in <code>src/App.jsx</code>
+                    1. Save your MP4 video into <code>public/</code> or use a YouTube URL<br />
+                    2. Set <code>videoUrl</code> in <code>src/App.jsx</code>
                   </div>
                 </div>
               ) : (

@@ -10,9 +10,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 function photoManifestPlugin() {
   return {
     name: 'photo-manifest-plugin',
-    buildStart() {
-      generatePhotoManifest()
-    },
     configureServer(server) {
       generatePhotoManifest()
       const photosDir = path.resolve(__dirname, 'public/photos')

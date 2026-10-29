@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import process from 'process';
 import { fileURLToPath } from 'url';
 
@@ -38,18 +39,42 @@ export function generatePhotoManifest() {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
   });
 
-  const manifest = imageFiles.map((file) => {
-    const baseName = file.replace(/\.[^/.]+$/, '');
-    const defaultCaption = KNOWN_CAPTIONS[file] || (file.startsWith('DSC') ? '' : baseName.replace(/[-_]/g, ' '));
-    return {
-      filename: file,
-      url: `/photos/${encodeURIComponent(file)}`,
-      caption: defaultCaption
-    };
-  });
+  const seenHashes = new Set();
+  const manifest = [];
 
-  fs.writeFileSync(outputFile, JSON.stringify(manifest, null, 2), 'utf8');
-  console.log(`[photo-manifest] Generated ${manifest.length} photo entries in src/photoManifest.json`);
+  for (const file of imageFiles) {
+    const filePath = path.join(photosDir, file);
+    try {
+      const buffer = fs.readFileSync(filePath);
+      const hash = crypto.createHash('md5').update(buffer).digest('hex');
+
+      // Skip exact duplicate photos
+      if (seenHashes.has(hash)) {
+        continue;
+      }
+      seenHashes.add(hash);
+
+      const baseName = file.replace(/\.[^/.]+$/, '');
+      const defaultCaption = KNOWN_CAPTIONS[file] || (file.startsWith('DSC') ? '' : baseName.replace(/[-_]/g, ' '));
+
+      manifest.push({
+        filename: file,
+        url: `/photos/${encodeURIComponent(file)}`,
+        caption: defaultCaption
+      });
+    } catch (err) {
+      console.error(`[photo-manifest] Error processing ${file}:`, err);
+    }
+  }
+
+  const newContent = JSON.stringify(manifest, null, 2);
+  const existingContent = fs.existsSync(outputFile) ? fs.readFileSync(outputFile, 'utf8') : '';
+
+  if (existingContent !== newContent) {
+    fs.writeFileSync(outputFile, newContent, 'utf8');
+    console.log(`[photo-manifest] Generated ${manifest.length} unique photo entries in src/photoManifest.json`);
+  }
+
   return manifest;
 }
 
