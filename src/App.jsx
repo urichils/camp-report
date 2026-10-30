@@ -450,7 +450,7 @@ const COMMITTEE_REPORTS = [
           'Had three programmes to coordinate',
           'Street play at 3 PM',
           'Cultural event at Township at 5 PM',
-          'De Paul School Students event at 5:30 PM',
+          'De Paul Public School Students event at 5:30 PM',
           'Campers’ culturals at 6:30 PM',
           'Campfire',
           'By 4:30 PM, the team went to township to clear the area for the event',
@@ -1456,7 +1456,7 @@ export default function App() {
       </section>
 
 
-      {/* SECTION: THANKS TO DE PAUL SCHOOL */}
+      {/* SECTION: THANKS TO DE PAUL PUBLIC SCHOOL */}
       <section ref={dePaulThanksRef} style={{
         backgroundColor: '#EBE2CC',
         color: '#2C221E',
@@ -1495,7 +1495,7 @@ export default function App() {
             letterSpacing: '-0.5px'
           }}>
             Special Thanks to <br></br>
-            De Paul School
+            De Paul Public School
           </h2>
 
           <div style={{ width: '100px', height: '2px', backgroundColor: '#7A3E29', margin: '0 auto 32px auto' }} />
@@ -1510,7 +1510,7 @@ export default function App() {
             margin: '0 auto',
             maxWidth: '820px'
           }}>
-            "We express our sincere gratitude to De Paul School for their support and cooperation in making Sahayathra 2026 a success."
+            We express our sincere gratitude to De Paul Public School for their support and cooperation in making Sahayathra 2026 a success.
           </p>
         </div>
       </section>
@@ -1996,7 +1996,7 @@ export default function App() {
                   gap: '12px'
                 }}>
                   {activeReportDay.points.map((item, pIdx) => {
-                    const isSubItem = item.startsWith('Street play') || item.startsWith('Cultural event at Township') || item.startsWith('De Paul School') || item.startsWith('Campers’ culturals') || item.startsWith('Campfire');
+                    const isSubItem = item.startsWith('Street play') || item.startsWith('Cultural event at Township') || item.startsWith('De Paul Public School') || item.startsWith('De Paul School') || item.startsWith('Campers’ culturals') || item.startsWith('Campfire');
                     return (
                       <li
                         key={pIdx}
@@ -2394,14 +2394,14 @@ export default function App() {
 
             <div className="awards-grid-three">
               <article className="award-card">
-                <img src={kannanChettan} alt="Kannan Chetan" />
+                <img src={kannanChettan} alt="Kannan Chettan" />
                 <span className="award-label">APPRECIATION</span>
-                <h3>Kannan Chetan</h3>
+                <h3>Kannan Chettan</h3>
               </article>
               <article className="award-card">
-                <img src={abhijithChettan} alt="Abhijith Chetan" />
+                <img src={abhijithChettan} alt="Abhijith Chettan" />
                 <span className="award-label">APPRECIATION</span>
-                <h3>Abhijith Chetan</h3>
+                <h3>Abhijith Chettan</h3>
               </article>
               <article className="award-card">
                 <img src={benjamin} alt="Benjamin" />
@@ -2580,7 +2580,7 @@ export default function App() {
             margin: '0 auto',
             maxWidth: '820px'
           }}>
-            "We express our sincere gratitude to our college management, faculty, and administration for their invaluable support, guidance, and backing in making Sahayathra 2026 a resounding success."
+            We express our sincere gratitude to our college management, faculty, and administration for their invaluable support, guidance, and backing in making Sahayathra 2026 a resounding success.
           </p>
         </div>
       </section>
