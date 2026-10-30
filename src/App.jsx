@@ -67,7 +67,7 @@ const COMMITTEE_CONVENERS = [
   { code: 'COM 01', committee: 'Publicity, Documentation and Camp Paper', convener: 'Athul John Joseph', coConvener: 'Meghana Annup' },
   { code: 'COM 02', committee: 'Food and Waste Management', convener: 'Nidhi Grace', coConvener: 'Jiss Abraham' },
   { code: 'COM 03', committee: 'Programme and Cultural', convener: 'Ahmed Shameer', coConvener: 'Aysha Sana V.' },
-  { code: 'COM 04', committee: 'Discipline', convener: 'Abhijith Biju', coConvener: 'Don Savio' },
+  { code: 'COM 04', committee: 'Discipline', convener: 'Uttara Bijoy', coConvener: 'Don Savio' },
   { code: 'COM 05', committee: 'Travel and Accommodation', convener: 'Pragathi Raj', coConvener: 'Akhil' },
   { code: 'COM 06', committee: 'Tools and Work', convener: 'Thejaswini Nair', coConvener: 'Abhinav B. T.' },
   { code: 'COM 07', committee: 'Finance, First Aid and Medical', convener: 'Aleena K. Ani', coConvener: 'Nikhil Paul' }
