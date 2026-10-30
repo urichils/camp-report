@@ -2374,8 +2374,8 @@ export default function App() {
                 <h3>Jiss Abraham</h3>
               </article>
               <article className="award-card award-featured">
-                <img src={bestCamper} alt="Parvathy Krishna, Best Camp Girl" />
-                <span className="award-label">BEST CAMP GIRL</span>
+                <img src={bestCampgirl} alt="Parvathy Krishna, Best Camp Girl" />
+                <span className="award-label">BEST CAMPER</span>
                 <h3>Parvathy Krishna</h3>
               </article>
             </div>
