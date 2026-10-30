@@ -2370,12 +2370,12 @@ export default function App() {
             <div className="awards-grid">
               <article className="award-card award-featured">
                 <img src={bestCamper} alt="Jiss Abraham, Best Camper" />
-                <span className="award-label">BEST CAMPER</span>
+                <span className="award-label">BEST CAMPER (Boy)</span>
                 <h3>Jiss Abraham</h3>
               </article>
               <article className="award-card award-featured">
                 <img src={bestCampgirl} alt="Parvathy Krishna, Best Camp Girl" />
-                <span className="award-label">BEST CAMPER</span>
+                <span className="award-label">BEST CAMPER (Girl)</span>
                 <h3>Parvathy Krishna</h3>
               </article>
             </div>
