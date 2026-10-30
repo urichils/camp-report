@@ -813,22 +813,6 @@ const FINAL_CAMP_VIDEO = {
   videoUrl: 'https://youtu.be/VcXdd2t63Dg'
 };
 
-const CAMP_TIMETABLE = [
-  { time: '4:30 AM', activity: 'Morning wake-up' },
-  { time: '6:00 AM', activity: 'Assembly' },
-  { time: '7:00 AM', activity: 'Morning prayer / devotional session' },
-  { time: '7:30 AM', activity: 'Voluntary labour' },
-  { time: '9:00 AM', activity: 'Voluntary labour continues' },
-  { time: '11:00 AM', activity: 'Refreshments' },
-  { time: '11:15 AM', activity: 'Voluntary labour continues' },
-  { time: '1:00 PM', activity: 'Lunch' },
-  { time: '2:00 PM', activity: 'Household visits' },
-  { time: '4:30 PM', activity: 'Break' },
-  { time: '6:00 PM', activity: 'Cultural programmes' },
-  { time: '8:15 PM', activity: 'Dinner' },
-  { time: '9:15 PM', activity: 'Club evaluation' },
-  { time: '10:00 PM', activity: 'Good night' },
-];
 
 export default function App() {
   const [offset, setOffset] = useState(0);
@@ -860,7 +844,6 @@ export default function App() {
   const preCampRef = useRef(null);
   const postCampRef = useRef(null);
   const dePaulThanksRef = useRef(null);
-  const campTimetableRef = useRef(null);
   const endRef = useRef(null);
   const awardsRef = useRef(null);
   const helpingHandsRef = useRef(null);
@@ -1598,71 +1581,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION: CAMP TIMETABLE */}
-      <section ref={campTimetableRef} style={{
-        backgroundColor: '#FBF7EE',
-        color: '#2C221E',
-        padding: '80px 60px',
-        borderTop: '1px solid #D0C2A7'
-      }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <div style={{ borderBottom: '1px solid #2C221E', paddingBottom: '16px', marginBottom: '12px' }}>
-            <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#7A3E29', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
-              SECTION 04 // DAILY ROUTINE
-            </span>
-            <h2 style={{ fontFamily: 'Title', fontSize: '2.2rem', margin: 0, fontWeight: 'bold', color: '#2C221E' }}>
-              Daily Timetable
-            </h2>
-          </div>
-          <p style={{ fontFamily: 'sans-serif', fontSize: '1rem', color: '#52443D', fontStyle: 'italic', margin: '0 0 32px 0' }}>
-            A day of service, reflection, and community
-          </p>
-
-          <div>
-            {CAMP_TIMETABLE.map((entry, idx) => (
-              <div
-                key={idx}
-                className="camp-timetable-row"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(110px, 140px) 1fr',
-                  gap: '24px',
-                  padding: '18px 0',
-                  borderBottom: idx < CAMP_TIMETABLE.length - 1 ? '1px solid rgba(44, 34, 30, 0.12)' : 'none',
-                  alignItems: 'baseline'
-                }}
-              >
-                <span style={{
-                  fontFamily: 'monospace',
-                  fontSize: '0.95rem',
-                  color: '#7A3E29',
-                  letterSpacing: '0.5px',
-                  fontWeight: 600
-                }}>
-                  {entry.time}
-                </span>
-                <span style={{
-                  fontFamily: 'sans-serif',
-                  fontSize: '1rem',
-                  color: '#2C221E',
-                  lineHeight: 1.5
-                }}>
-                  {entry.activity}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <style>{`
-            @media (max-width: 600px) {
-              .camp-timetable-row {
-                grid-template-columns: 1fr !important;
-                gap: 4px !important;
-              }
-            }
-          `}</style>
-        </div>
-      </section>
 
       {/* SECTION 4: GROUP JOURNAL */}
       <section ref={journalRef} style={{ backgroundColor: '#FBF7EE', color: '#2C221E', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
