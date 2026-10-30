@@ -30,7 +30,8 @@ const CAMP_COORDINATORS = [
   'Priyanka E. Thampi',
   'Dr. Lijo K. J.',
   'Lakshmi Jayaraj',
-  'Keerthana Mohandas'
+  'Keerthana Mohandas',
+  'Ajay Antony Joseph'
 ];
 
 const CAMP_ADVISERS = [
